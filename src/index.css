@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+	.header-icon {
+		@apply w-14 h-14 stroke-gray-400 group-hover:stroke-black cursor-pointer;
+	}
+
+	.u-page {
+		@apply h-[calc(100vh-5rem)];
+	}
+}
