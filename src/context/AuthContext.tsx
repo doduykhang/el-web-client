@@ -8,7 +8,7 @@ interface AuthContextInterface {
 type UpdateType = Dispatch<SetStateAction<AuthContextInterface>>
 
 const defaultAuthContext: AuthContextInterface = {
-	firstName: 'test',
+	firstName: '',
 	lastName: '',
 	role: '',
 }

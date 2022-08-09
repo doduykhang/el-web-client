@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import { useContext, useMemo } from 'react'
+import { AuthContext } from '../../../context/AuthContext'
 import {
 	BookIcon,
 	FolderIcon,
@@ -8,6 +9,8 @@ import {
 import HeaderItem from './components/HeaderItem/HeaderItem'
 
 const HeaderCommon = () => {
+	const { auth } = useContext(AuthContext)
+
 	const headerItems = useMemo(
 		() => [
 			{
@@ -36,6 +39,7 @@ const HeaderCommon = () => {
 	)
 	return (
 		<nav className='sticky w-screen h-20 border-b-2 top-0 bg-white flex justify-center'>
+			{auth.firstName}
 			<ul className='flex gap-2 items-center h-full w-1/2 justify-between'>
 				{headerItems.map((item, index) => (
 					<HeaderItem

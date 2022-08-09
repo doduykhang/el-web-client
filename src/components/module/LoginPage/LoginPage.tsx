@@ -15,6 +15,7 @@ const LoginPage = () => {
 		try {
 			await api.authApi.login({ email, password })
 			const res = await api.authApi.getProfile()
+			console.log(res)
 			update({
 				firstName: res.firstName,
 				lastName: res.lastName,
