@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../../api/index.api'
+import { AuthContext } from '../../../context/AuthContext'
 
 const LoginPage = () => {
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
+	const { update } = useContext(AuthContext)
+
 	let navigate = useNavigate()
 
 	const login = async (e: React.SyntheticEvent) => {
@@ -12,8 +15,11 @@ const LoginPage = () => {
 		try {
 			await api.authApi.login({ email, password })
 			const res = await api.authApi.getProfile()
-			//@TODO save to auth context
-			console.log(res)
+			update({
+				firstName: res.firstName,
+				lastName: res.lastName,
+				role: res.role,
+			})
 			navigate('/')
 		} catch (err: any) {
 			console.log(err.message)
