@@ -1,20 +1,23 @@
-import { lessonDetail } from '../../../../../types/lesson-detail'
+interface props {
+	name: string
+	imageURL: string
+	content: string
+	createdBy: string
+}
 
-interface props extends lessonDetail {}
-
-const LessonDetailInfo = ({ title, imageUrl, content, createdBy }: props) => {
+const LessonDetailInfo = ({ name, imageURL, content, createdBy }: props) => {
 	return (
-		<div>
-			<h1 className='text-3xl mt-1'>{title}</h1>
+		<div className='flex flex-col items-center'>
+			<img
+				className='w-1/2 h-auto my-4'
+				src={imageURL}
+				alt='lesson image'
+			/>
+			<h1 className='text-3xl mt-1'>{name}</h1>
 			<h2 className='text-gray-700 mt-1'>
 				Created by:
 				<span className=''> {createdBy}</span>
 			</h2>
-			<img
-				className='w-full h-auto my-4'
-				src={imageUrl}
-				alt='lesson image'
-			/>
 			<p className='mt-5'>{content}</p>
 		</div>
 	)

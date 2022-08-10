@@ -45,7 +45,10 @@ function App() {
 						</ProtectedRoute>
 					}
 				/>
-				<Route path='/lesson-detail' element={<LessonDetailPage />} />
+				<Route
+					path='/lesson-detail/:id'
+					element={<LessonDetailPage />}
+				/>
 				<Route path='/flashcard' element={<FlashcardPage />} />
 				<Route
 					path='/profile'

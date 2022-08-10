@@ -1,5 +1,7 @@
 export interface lesson {
-  id: number;
-  title: string;
-  imageUrl: string;
+	id: number
+	lessonName: string
+	imageURL: string
+	description: string
+	content: string
 }
