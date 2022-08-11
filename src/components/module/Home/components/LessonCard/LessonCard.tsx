@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { ButtonCommon } from '../../../../common/'
 
 interface props {
@@ -6,7 +7,7 @@ interface props {
 	imageURL: string
 }
 
-const LessonCard = ({ imageURL, title }: props) => {
+const LessonCard = ({ id, imageURL, title }: props) => {
 	return (
 		<div className='flex flex-col gap-2 w-60 p-2 rounded-md ring-2 ring-gray-400 shadow-lg '>
 			<img
@@ -15,7 +16,9 @@ const LessonCard = ({ imageURL, title }: props) => {
 				className='w-60 rounded-md'
 			/>
 			<span className='text-xl font-medium line-clamp-2'>{title}</span>
-			<ButtonCommon>Learn now</ButtonCommon>
+			<ButtonCommon>
+				<Link to={`/lesson-detail/${id}`}>Learn now</Link>
+			</ButtonCommon>
 		</div>
 	)
 }

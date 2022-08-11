@@ -1,51 +1,55 @@
-import { useEffect, useMemo, useState } from 'react'
-import { word1, word2 } from '../../../data/words.data'
-import { word } from '../../../types/word'
+import { useEffect, useMemo } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+	onAnswerRight,
+	onAnswerWrong,
+	onLearnAgain,
+} from '../../../redux/card/cardSlice'
+import { useAppDispatch, useAppSelector } from '../../../redux/hook'
 import { ButtonCommon, GobackButtonCommon, ProgressCommon } from '../../common'
 import Flashcard from './components/Flashcard/Flashcard'
 
 const FlashcardPage = () => {
-	const [words, setWords] = useState<word[]>([])
-	const [currentWordIndex, setCurrentWordIndex] = useState(-1)
+	const {
+		cards,
+		wrongAnswersCount,
+		rightAnswerCount,
+		isCompleted,
+		currentWordIndex,
+	} = useAppSelector((state) => state.card)
 
-	const [rightAnswerCount, setRightAnswerCount] = useState(0)
-	const [wrongAnswersCount, setWrongAnswersCount] = useState(0)
+	const dispatch = useAppDispatch()
 
-	const [isCompleted, setIsCompleted] = useState(false)
-
-	const getPercentage = () => {
-		return ((rightAnswerCount + wrongAnswersCount) / words.length) * 100
-	}
+	const navigate = useNavigate()
 
 	useEffect(() => {
-		setWords([word1, word2])
-		setCurrentWordIndex(0)
+		if (cards.length === 0) navigate('/')
 	}, [])
 
-	const handleAnswerRight = () => {
-		if (currentWordIndex === words.length) return
-		setRightAnswerCount((old) => old + 1)
-		if (currentWordIndex === words.length - 1) {
-			setIsCompleted(true)
-			return
-		}
-		setCurrentWordIndex((old) => old + 1)
-	}
-
-	const handleAnswerWrong = () => {
-		if (currentWordIndex === words.length) return
-		setWrongAnswersCount((old) => old + 1)
-		if (currentWordIndex === words.length - 1) {
-			setIsCompleted(true)
-			return
-		}
-		setCurrentWordIndex((old) => old + 1)
+	const getPercentage = () => {
+		return ((rightAnswerCount + wrongAnswersCount) / cards.length) * 100
 	}
 
 	const currentWord = useMemo(
-		() => words[currentWordIndex],
-		[words, currentWordIndex]
+		() => cards[currentWordIndex],
+		[cards, currentWordIndex]
 	)
+
+	const handleAnswerWrong = () => {
+		dispatch(onAnswerWrong())
+	}
+
+	const handleAnswerRight = () => {
+		dispatch(onAnswerRight())
+	}
+
+	const goBack = () => {
+		navigate(-1)
+	}
+
+	const learnAgain = () => {
+		dispatch(onLearnAgain())
+	}
 
 	return (
 		<div className='u-page ring flex flex-col'>
@@ -59,12 +63,16 @@ const FlashcardPage = () => {
 				{isCompleted && (
 					<div className='text-2xl font-bold'>
 						<span>
-							Congratulation, you've just leanrned {words.length}{' '}
+							Congratulation, you've just leanrned {cards.length}{' '}
 							words
 						</span>
 						<div className='flex gap-2 mt-2'>
-							<ButtonCommon>Return to folder</ButtonCommon>
-							<ButtonCommon>Learn again</ButtonCommon>
+							<ButtonCommon onClick={goBack}>
+								Return to folder
+							</ButtonCommon>
+							<ButtonCommon onClick={learnAgain}>
+								Learn again
+							</ButtonCommon>
 						</div>
 					</div>
 				)}

@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import api from '../../../api/index.api'
+import { setCard } from '../../../redux/card/cardSlice'
+import { useAppDispatch } from '../../../redux/hook'
+import { setTest } from '../../../redux/test/testSlice'
 import { LessonDetail } from '../../../types/lesson-detail'
 import { Manager } from '../../../types/manager'
 import { word } from '../../../types/word'
+import { ButtonCommon } from '../../common'
 import LessonDetailInfo from './components/LessonDetailInfo/LessonDetailInfo'
 import WordTable from './components/WordTable/WordTable'
 
@@ -13,6 +17,8 @@ const LessonDetailPage = () => {
 	const [manager, setManager] = useState<Manager | null>(null)
 
 	const { id } = useParams()
+	const dispatch = useAppDispatch()
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		const getLessonDetail = async () => {
@@ -26,8 +32,18 @@ const LessonDetailPage = () => {
 		getLessonDetail()
 	}, [])
 
+	const handleLearnWithFlashcard = () => {
+		dispatch(setCard(words))
+		navigate('/flashcard')
+	}
+
+	const handleMockTest = () => {
+		dispatch(setTest(words))
+		navigate('/test')
+	}
+
 	return (
-		<div className='px-20 flex flex-col items-center'>
+		<div className='px-20 py-10 flex'>
 			{lessonDetail && manager && (
 				<LessonDetailInfo
 					name={lessonDetail.lessonName}
@@ -37,7 +53,16 @@ const LessonDetailPage = () => {
 				/>
 			)}
 			<div className='w-1/2'>
-				<WordTable words={words} />
+				<div className='flex flex-col gap-2'>
+					<WordTable words={words} />
+					<ButtonCommon onClick={handleLearnWithFlashcard}>
+						Learn with flascard
+					</ButtonCommon>
+
+					<ButtonCommon onClick={handleMockTest}>
+						Mock test
+					</ButtonCommon>
+				</div>
 			</div>
 		</div>
 	)
