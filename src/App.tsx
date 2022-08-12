@@ -6,6 +6,7 @@ import ProtectedRoute from './components/common/ProtectedRoute'
 import { FlashcardPage, HomePage, LessonDetailPage } from './components/module'
 import LoginPage from './components/module/LoginPage/LoginPage'
 import ProfilePage from './components/module/ProfilePage/ProfilePage'
+import RealTestPage from './components/module/RealTestPage/RealTestPage'
 import TestPage from './components/module/TestPage/TestPage'
 import { AuthContext } from './context/AuthContext'
 
@@ -62,7 +63,8 @@ function App() {
 						</ProtectedRoute>
 					}
 				/>
-				<Route path='/test' element={<TestPage />} />
+				<Route path='/mock-test' element={<TestPage />} />
+				<Route path='/test/:id' element={<RealTestPage />} />
 			</Routes>
 		</BrowserRouter>
 	)
