@@ -1,3 +1,5 @@
+import { InputCommon } from '../../../common'
+
 interface props {
 	content: string
 	text: string
@@ -5,14 +7,12 @@ interface props {
 }
 
 const AudioQuestion = ({ content, text, onChange }: props) => {
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		onChange(e.target.value)
-	}
-
 	return (
-		<div>
+		<div className='px-20 w-full h-full flex flex-col justify-around'>
 			<audio src={content} controls></audio>
-			<input value={text} onChange={handleChange} type='text' />{' '}
+			<div>
+				<InputCommon value={text} onChange={onChange} />
+			</div>
 		</div>
 	)
 }

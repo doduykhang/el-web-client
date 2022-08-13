@@ -8,7 +8,7 @@ import FillQuestion from './FillQuestion'
 
 interface props {
 	question: Question
-	onAnswer: (answer: string) => void
+	onAnswer: (id: number, answer: string) => void
 }
 
 const QuestionBuilder = ({ question, onAnswer }: props) => {
@@ -17,7 +17,8 @@ const QuestionBuilder = ({ question, onAnswer }: props) => {
 
 	const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		onAnswer(input)
+		setInput('')
+		onAnswer(question.id, input)
 	}
 
 	const getOptions = async (id: number) => {
@@ -45,7 +46,6 @@ const QuestionBuilder = ({ question, onAnswer }: props) => {
 					/>
 				)
 			}
-
 			case 'CHOICE': {
 				getOptions(question.id)
 				return (
@@ -63,8 +63,8 @@ const QuestionBuilder = ({ question, onAnswer }: props) => {
 		}
 	}
 	return (
-		<form onSubmit={handleSubmit}>
-			{buildQuestion()} {input}
+		<form className='w-full h-full' onSubmit={handleSubmit}>
+			{buildQuestion()}
 		</form>
 	)
 }
