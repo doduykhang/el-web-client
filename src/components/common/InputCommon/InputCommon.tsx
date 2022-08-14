@@ -9,7 +9,7 @@ const InputCommon = ({ value, onChange }: props) => {
 	}
 	return (
 		<input
-			className='p-2 h-12 w-full text-2xl border-black border-2 rounded-xl'
+			className='p-2 h-12 w-full text-2xl border-black border-2 rounded-xl [&:not(:focus)]:text-3xl'
 			type='text'
 			onChange={handleChange}
 			value={value}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import api from '../../../api/index.api'
 import { Question } from '../../../types/questions'
+import { ButtonCommon } from '../../common'
 import QuestionBuilder from './components/QuestionBuilder'
 import SideBar from './components/SideBar'
 
@@ -10,7 +11,9 @@ const RealTestPage = () => {
 	const [questions, setQuestions] = useState<Question[]>([])
 	const [currentQuestion, setCurrentQuestion] = useState(0)
 	const [answers, setAnswer] = useState<any>({})
+	const [remainingTime, setRemainingTime] = useState(90)
 	const [finished, setFinishied] = useState(false)
+	const [score, setScore] = useState('')
 
 	useEffect(() => {
 		const getQuestions = async () => {
@@ -32,17 +35,47 @@ const RealTestPage = () => {
 		getQuestions()
 	}, [])
 
-	const handleAnswer = (id: number, answer: string) => {
-		if (currentQuestion === questions.length - 1) {
-			setFinishied(true)
-			return
+	useEffect(() => {
+		const interval = setInterval(() => {
+			if (remainingTime > 0) setRemainingTime((old) => old - 1)
+		}, 1000)
+
+		return () => {
+			clearInterval(interval)
 		}
+	}, [remainingTime])
+
+	const handleAnswer = (id: number, answer: string) => {
 		setAnswer((old: any) => {
 			const newAnswer = { ...old }
 			newAnswer[id] = answer
 			return newAnswer
 		})
+		if (currentQuestion === questions.length - 1) return
 		setCurrentQuestion((old) => old + 1)
+	}
+
+	const formatTime = (time: number) => {
+		const minute = Math.floor(time / 60)
+		const second = Math.floor(time % 60)
+		return `${minute}:${second}`
+	}
+
+	const handleSubmitTest = async () => {
+		if (id) {
+			const response = await api.testApi.submitTest({
+				testID: +id,
+				answers,
+			})
+			console.log(response)
+
+			const totalScore = questions.reduce((score, current) => {
+				if (current.answer === answers[current.id]) score++
+				return score
+			}, 0)
+			setScore(((totalScore / questions.length) * 10).toFixed(2))
+			setFinishied(true)
+		}
 	}
 
 	return (
@@ -51,13 +84,31 @@ const RealTestPage = () => {
 				<SideBar
 					currentQuestion={currentQuestion}
 					answers={answers}
+					questions={questions}
+					isFinished={finished}
 					onSelectQuestion={setCurrentQuestion}
 				/>
-				<div className='w-full h-full'>
+				<div className='w-full flex flex-col items-center'>
+					<div className='w-full flex justify-between items-center px-6 mt-2'>
+						<span className='mx-auto text-2xl'>
+							{formatTime(remainingTime)}
+						</span>
+						<div className='w-28'>
+							{finished ? (
+								<div>Score {score}</div>
+							) : (
+								<ButtonCommon onClick={handleSubmitTest}>
+									Submit
+								</ButtonCommon>
+							)}
+						</div>
+					</div>
 					{questions.length && (
 						<QuestionBuilder
 							question={questions[currentQuestion]}
+							isFinished={finished}
 							onAnswer={handleAnswer}
+							userAnswer={answers}
 						/>
 					)}
 				</div>
