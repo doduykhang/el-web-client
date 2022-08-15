@@ -6,3 +6,7 @@ export interface word {
 	type: string
 	pronounciation: string
 }
+
+export interface WordWithSave extends word {
+	saved: boolean
+}

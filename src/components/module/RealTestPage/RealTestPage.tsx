@@ -11,7 +11,7 @@ const RealTestPage = () => {
 	const [questions, setQuestions] = useState<Question[]>([])
 	const [currentQuestion, setCurrentQuestion] = useState(0)
 	const [answers, setAnswer] = useState<any>({})
-	const [remainingTime, setRemainingTime] = useState(90)
+	const [remainingTime, setRemainingTime] = useState(30)
 	const [finished, setFinishied] = useState(false)
 	const [score, setScore] = useState('')
 
@@ -35,32 +35,6 @@ const RealTestPage = () => {
 		getQuestions()
 	}, [])
 
-	useEffect(() => {
-		const interval = setInterval(() => {
-			if (remainingTime > 0) setRemainingTime((old) => old - 1)
-		}, 1000)
-
-		return () => {
-			clearInterval(interval)
-		}
-	}, [remainingTime])
-
-	const handleAnswer = (id: number, answer: string) => {
-		setAnswer((old: any) => {
-			const newAnswer = { ...old }
-			newAnswer[id] = answer
-			return newAnswer
-		})
-		if (currentQuestion === questions.length - 1) return
-		setCurrentQuestion((old) => old + 1)
-	}
-
-	const formatTime = (time: number) => {
-		const minute = Math.floor(time / 60)
-		const second = Math.floor(time % 60)
-		return `${minute}:${second}`
-	}
-
 	const handleSubmitTest = async () => {
 		if (id) {
 			const response = await api.testApi.submitTest({
@@ -76,6 +50,37 @@ const RealTestPage = () => {
 			setScore(((totalScore / questions.length) * 10).toFixed(2))
 			setFinishied(true)
 		}
+	}
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			if (remainingTime <= 0 && !finished) {
+				handleSubmitTest()
+				setFinishied(true)
+				return
+			}
+			if (remainingTime > 0) setRemainingTime((old) => old - 1)
+		}, 1000)
+
+		return () => {
+			clearInterval(interval)
+		}
+	}, [remainingTime, handleSubmitTest])
+
+	const handleAnswer = (id: number, answer: string) => {
+		setAnswer((old: any) => {
+			const newAnswer = { ...old }
+			newAnswer[id] = answer
+			return newAnswer
+		})
+		if (currentQuestion === questions.length - 1) return
+		setCurrentQuestion((old) => old + 1)
+	}
+
+	const formatTime = (time: number) => {
+		const minute = Math.floor(time / 60)
+		const second = Math.floor(time % 60)
+		return `${minute}:${second}`
 	}
 
 	return (

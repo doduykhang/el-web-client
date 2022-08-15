@@ -3,7 +3,12 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import api from './api/index.api'
 import { HeaderCommon } from './components/common'
 import ProtectedRoute from './components/common/ProtectedRoute'
-import { FlashcardPage, HomePage, LessonDetailPage } from './components/module'
+import {
+	FlashcardPage,
+	HomePage,
+	LessonDetailPage,
+	SearchWordPage,
+} from './components/module'
 import LoginPage from './components/module/LoginPage/LoginPage'
 import ProfilePage from './components/module/ProfilePage/ProfilePage'
 import RealTestPage from './components/module/RealTestPage/RealTestPage'
@@ -65,6 +70,8 @@ function App() {
 				/>
 				<Route path='/mock-test' element={<TestPage />} />
 				<Route path='/test/:id' element={<RealTestPage />} />
+
+				<Route path='/search-word' element={<SearchWordPage />} />
 			</Routes>
 		</BrowserRouter>
 	)
