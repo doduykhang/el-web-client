@@ -17,4 +17,14 @@ export class WordApi extends BaseApi {
 		const rs = await this.get(`/user/search?${query}`)
 		return rs
 	}
+
+	addWordToUser = async (data: any) => {
+		const rs = await this.post(`/user`, data)
+		return rs
+	}
+
+	removeWordFromUser = async (data: any) => {
+		const rs = await this.delete(`/user`, data)
+		return rs
+	}
 }

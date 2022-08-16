@@ -1,3 +1,4 @@
+import { Alert, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import api from '../../../api/index.api'
 import { AuthContext } from '../../../context/AuthContext'
@@ -14,6 +15,8 @@ const SearchWordPage = () => {
 	const [words, setWords] = useState<WordWithSave[]>([])
 	const [currentPage, setCurrentPage] = useState(1)
 	const { auth } = useContext(AuthContext)
+	const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
+	const [isRemoveSnackbarOpen, setIsRemoveSnackbarOpen] = useState(false)
 
 	const handleSearchWord = async () => {
 		setCurrentPage(1)
@@ -30,10 +33,33 @@ const SearchWordPage = () => {
 			})
 			setTotal(response.total)
 			setWords(response.data || [])
-			console.log(response)
 		}
 		findWord()
 	}, [currentPage, query])
+
+	const saveWord = async (id: number) => {
+		await api.wordApi.addWordToUser({ wordID: id })
+		setWords((old) => {
+			return old.map((word) => {
+				if (word.id === id) word.saved = true
+				return word
+			})
+		})
+
+		setIsSnackbarOpen(true)
+	}
+
+	const removeWord = async (id: number) => {
+		await api.wordApi.removeWordFromUser({ wordID: id })
+		setWords((old) => {
+			return old.map((word) => {
+				if (word.id === id) word.saved = false
+				return word
+			})
+		})
+
+		setIsRemoveSnackbarOpen(true)
+	}
 
 	return (
 		<div className='u-page p-2'>
@@ -59,9 +85,21 @@ const SearchWordPage = () => {
 								<audio src={word.pronounciation} controls />
 							</div>
 							<div>
-								{auth.role === 'USER' && !word.saved && (
-									<ButtonCommon>Save word</ButtonCommon>
-								)}
+								{auth.role === 'USER' &&
+									(!word.saved ? (
+										<ButtonCommon
+											onClick={() => saveWord(word.id)}
+										>
+											Save word
+										</ButtonCommon>
+									) : (
+										<ButtonCommon
+											onClick={() => removeWord(word.id)}
+											variant='error'
+										>
+											Remove word
+										</ButtonCommon>
+									))}
 							</div>
 						</div>
 					)
@@ -77,6 +115,31 @@ const SearchWordPage = () => {
 					/>
 				)}
 			</div>
+			<Snackbar
+				open={isSnackbarOpen}
+				autoHideDuration={6000}
+				onClose={() => setIsSnackbarOpen(false)}
+			>
+				<Alert
+					onClose={() => setIsSnackbarOpen(false)}
+					severity='success'
+				>
+					Word saved
+				</Alert>
+			</Snackbar>
+
+			<Snackbar
+				open={isSnackbarOpen}
+				autoHideDuration={6000}
+				onClose={() => setIsRemoveSnackbarOpen(false)}
+			>
+				<Alert
+					onClose={() => setIsRemoveSnackbarOpen(false)}
+					severity='success'
+				>
+					Word removed
+				</Alert>
+			</Snackbar>
 		</div>
 	)
 }
