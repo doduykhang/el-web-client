@@ -2,6 +2,7 @@ import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../../api/index.api'
 import { AuthContext } from '../../../context/AuthContext'
+import { ButtonCommon, InputCommon } from '../../common'
 
 const LoginPage = () => {
 	const [email, setEmail] = useState('')
@@ -28,22 +29,26 @@ const LoginPage = () => {
 	}
 
 	return (
-		<div className='px-20'>
+		<div className='u-page flex flex-col justify-center items-center'>
+			<h1 className='text-2xl font-bold'>Login</h1>
 			<form onSubmit={login}>
-				<div>Email</div>
-				<input
-					type='text'
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-				/>
+				<div className='form-control'>
+					<label>Email</label>
+					<InputCommon value={email} onChange={setEmail} />
+				</div>
 
-				<div>Password</div>
-				<input
-					type='password'
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-				/>
-				<button type='submit'>Login</button>
+				<div className='form-control'>
+					<label>Password</label>
+					<InputCommon
+						type='password'
+						value={password}
+						onChange={setPassword}
+					/>
+				</div>
+				<div className='p-2' />
+				<ButtonCommon htmlType='submit' className='btn-primary'>
+					Login
+				</ButtonCommon>
 			</form>
 		</div>
 	)

@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { ButtonCommon } from '../../../../common/'
 
 interface props {
 	id: number
@@ -9,17 +8,25 @@ interface props {
 
 const LessonCard = ({ id, imageURL, title }: props) => {
 	return (
-		<div className='flex flex-col gap-2 w-60 p-2 rounded-md ring-2 ring-gray-400 shadow-lg '>
-			<img
-				src={imageURL}
-				alt='lesson image'
-				className='w-60 rounded-md'
-			/>
-			<span className='text-xl font-medium line-clamp-2'>{title}</span>
-			<ButtonCommon>
-				<Link to={`/lesson-detail/${id}`}>Learn now</Link>
-			</ButtonCommon>
-		</div>
+		<>
+			<div className='card w-60 bg-base-100 shadow-xl '>
+				<figure>
+					<img src={imageURL} alt='Lesson' />
+				</figure>
+				<div className='card-body items-center text-center'>
+					<h2 className='card-title'>{title}</h2>
+					<p></p>
+
+					<div className='card-actions justify-end'>
+						<Link to={`/lesson-detail/${id}`}>
+							<button className='btn btn-primary'>
+								Learn now
+							</button>
+						</Link>
+					</div>
+				</div>
+			</div>
+		</>
 	)
 }
 

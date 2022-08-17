@@ -7,6 +7,7 @@ interface props {
 	onSelectQuestion: (index: number) => void
 	isFinished: boolean
 	questions: Question[]
+	children: React.ReactNode
 }
 const SideBar = ({
 	answers,
@@ -14,23 +15,28 @@ const SideBar = ({
 	onSelectQuestion,
 	isFinished,
 	questions,
+	children,
 }: props) => {
 	return (
-		<div>
-			<ul className='ring-2 ring-black w-48 h-full p-2 overflow-auto'>
-				{questions.map((question, index) => (
-					<QuestionItem
-						key={question.id}
-						id={question.id}
-						answer={answers[question.id]}
-						index={index}
-						currentQuestion={currentQuestion}
-						finished={isFinished}
-						right={question.answer === answers[question.id]}
-						onSelectQuestion={onSelectQuestion}
-					/>
-				))}
-			</ul>
+		<div className='drawer flex'>
+			<div className='drawer-side w-80'>
+				<ul className='menu'>
+					{questions.map((question, index) => (
+						<QuestionItem
+							key={question.id}
+							id={question.id}
+							answer={answers[question.id]}
+							index={index}
+							currentQuestion={currentQuestion}
+							finished={isFinished}
+							right={question.answer === answers[question.id]}
+							onSelectQuestion={onSelectQuestion}
+						/>
+					))}
+				</ul>
+			</div>
+
+			<div className='drawer-content flex-1'>{children}</div>
 		</div>
 	)
 }

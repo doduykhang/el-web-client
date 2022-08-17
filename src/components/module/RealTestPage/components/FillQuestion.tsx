@@ -1,17 +1,28 @@
-import { InputCommon } from '../../../common'
+import { ButtonCommon, InputCommon } from '../../../common'
 
 interface props {
 	content: string
 	text: string
 	onChange: (input: string) => void
+  finished?: boolean
 }
 
-const FillQuestion = ({ content, text, onChange }: props) => {
+const FillQuestion = ({ content, text, onChange, finished }: props) => {
 	return (
-		<div className='px-20 w-full h-full flex flex-col justify-around'>
-			<h1 className='text-3xl'>{content}</h1>
-			<div>
-				<InputCommon value={text} onChange={onChange} />
+		<div className='card w-96 self-center bg-base-100 shadow-xl'>
+			<div className='card-body justify-between'>
+				<div className='flex flex-col gap-2 '>
+					<h2 className='text-2xl'>Fill in blank space</h2>
+					<h1 className='text-3xl'>{content}</h1>
+				</div>
+				<div className='form-control '>
+					<label>Answer</label>
+					<InputCommon value={text} onChange={onChange} disabled={finished}/>
+				</div>
+
+				<div className=''>
+					<ButtonCommon htmlType='submit'>Choose</ButtonCommon>
+				</div>
 			</div>
 		</div>
 	)

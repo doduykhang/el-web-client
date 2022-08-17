@@ -49,6 +49,7 @@ const QuestionBuilder = ({
 						content={question.content}
 						text={input}
 						onChange={setInput}
+						finished={isFinished}
 					/>
 				)
 			}
@@ -58,6 +59,7 @@ const QuestionBuilder = ({
 						content={question.content}
 						text={input}
 						onChange={setInput}
+						finished={isFinished}
 					/>
 				)
 			}
@@ -67,6 +69,7 @@ const QuestionBuilder = ({
 					<ChoiceQuestion
 						content={question.content}
 						option={input}
+						finished={isFinished}
 						onChange={setInput}
 						options={options}
 						onSubmit={handleChooseOption}
@@ -79,20 +82,33 @@ const QuestionBuilder = ({
 		}
 	}
 	return (
-		<form className='w-full h-[600px]' onSubmit={handleSubmit}>
-			{buildQuestion()}
+		<form
+			className='w-full h-[600px] flex flex-col justify-center'
+			onSubmit={handleSubmit}
+		>
+      <div className='mb-auto'>
+
 			{isFinished ? (
 				userAnswer[question.id] === question.answer ? (
-					<div>Right</div>
+					<div className='alert alert-success shadow-lg'>
+						<div>
+							<span>You are correct </span>
+						</div>
+					</div>
 				) : (
-					<div>
-						<span>Wrong, </span>
-						<span>right answer is {question.answer}</span>
+					<div className='alert alert-error shadow-lg'>
+						<div>
+							<span>
+								Wrong, right answer is {question.answer}{' '}
+							</span>
+						</div>
 					</div>
 				)
 			) : (
 				<div></div>
 			)}
+      </div>
+			{buildQuestion()}
 		</form>
 	)
 }

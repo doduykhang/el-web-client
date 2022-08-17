@@ -24,15 +24,17 @@ const QuestionItem = ({
 
 	return (
 		<li
-			className={classNames('h-10 mb-2 flex gap-2 items-center pl-4', {
-				'ring-4': index === currentQuestion || finished,
-				'ring-red-200': finished && !right,
-				'ring-green-200': finished && right,
+			className={classNames('', {
+				'ring-2 ring-black z-20': index === currentQuestion,
+				'bg-red-200': finished && !right,
+				'bg-green-200': finished && right,
 			})}
 			onClick={handleSelectQuestion}
 		>
-			<span>{index}</span>
-			<span>{answer}</span>
+			<div>
+				<span>{index}</span>
+				<span>{answer}</span>
+			</div>
 		</li>
 	)
 }

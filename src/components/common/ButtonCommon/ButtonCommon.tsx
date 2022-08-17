@@ -6,13 +6,14 @@ interface props {
 	variant?: 'error' | 'success'
 	htmlType?: 'button' | 'submit'
 	onClick?: () => void
+	className?: string
 }
 
 const ButtonCommon: React.FC<props> = ({
 	children,
-	variant = 'success',
 	onClick,
 	htmlType = 'button',
+	className = '',
 }) => {
 	const handleClick = () => {
 		onClick && onClick()
@@ -21,13 +22,7 @@ const ButtonCommon: React.FC<props> = ({
 		<button
 			type={htmlType}
 			onClick={handleClick}
-			className={classNames(
-				'bg-green-500 rounded-full w-full border-b-4 border-green-600 px-2 h-10 text-white text-lg hover:brightness-90 active:border-b-0',
-				{
-					'bg-green-500 border-green-600': variant === 'success',
-					'bg-red-500 border-red-600': variant === 'error',
-				}
-			)}
+			className={classNames('btn', className)}
 		>
 			{children}
 		</button>

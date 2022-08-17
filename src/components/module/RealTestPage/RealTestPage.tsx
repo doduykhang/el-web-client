@@ -47,7 +47,7 @@ const RealTestPage = () => {
 				if (current.answer === answers[current.id]) score++
 				return score
 			}, 0)
-			setScore(((totalScore / questions.length) * 10).toFixed(2))
+			setScore(((totalScore / questions.length) * 10).toFixed(1))
 			setFinishied(true)
 		}
 	}
@@ -59,7 +59,8 @@ const RealTestPage = () => {
 				setFinishied(true)
 				return
 			}
-			if (remainingTime > 0) setRemainingTime((old) => old - 1)
+			if (remainingTime > 0 && !finished)
+				setRemainingTime((old) => old - 1)
 		}, 1000)
 
 		return () => {
@@ -92,31 +93,52 @@ const RealTestPage = () => {
 					questions={questions}
 					isFinished={finished}
 					onSelectQuestion={setCurrentQuestion}
-				/>
-				<div className='w-full flex flex-col items-center'>
-					<div className='w-full flex justify-between items-center px-6 mt-2'>
-						<span className='mx-auto text-2xl'>
-							{formatTime(remainingTime)}
-						</span>
-						<div className='w-28'>
-							{finished ? (
-								<div>Score {score}</div>
-							) : (
-								<ButtonCommon onClick={handleSubmitTest}>
-									Submit
-								</ButtonCommon>
-							)}
+				>
+					<div className='w-full flex flex-col items-center'>
+						<div className='w-full flex justify-between items-center px-6 mt-2'>
+							<span className='mx-auto text-2xl'>
+								<p>
+									<span className='countdown font-mono text-md'>
+										<span
+											style={{
+												//@ts-ignore
+												'--value': Math.floor(
+													remainingTime / 60
+												),
+											}}
+										></span>
+										:
+										<span
+											style={{
+												//@ts-ignore
+												'--value': Math.floor(
+													remainingTime % 60
+												),
+											}}
+										></span>
+									</span>
+								</p>
+							</span>
+							<div className='w-28'>
+								{finished ? (
+									<div className='text-xl'>Score {score}</div>
+								) : (
+									<ButtonCommon onClick={handleSubmitTest}>
+										Submit
+									</ButtonCommon>
+								)}
+							</div>
 						</div>
+						{questions.length && (
+							<QuestionBuilder
+								question={questions[currentQuestion]}
+								isFinished={finished}
+								onAnswer={handleAnswer}
+								userAnswer={answers}
+							/>
+						)}
 					</div>
-					{questions.length && (
-						<QuestionBuilder
-							question={questions[currentQuestion]}
-							isFinished={finished}
-							onAnswer={handleAnswer}
-							userAnswer={answers}
-						/>
-					)}
-				</div>
+				</SideBar>
 			</div>
 		</div>
 	)

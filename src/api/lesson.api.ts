@@ -13,7 +13,7 @@ export class LessonApi extends BaseApi {
 	}
 
 	getLessonDetail = async (id: number) => {
-		const rs = await this.get(`/${id}`)
+		const rs = await this.get(`/maybe/${id}`)
 		return rs
 	}
 }

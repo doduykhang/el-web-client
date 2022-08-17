@@ -4,3 +4,4 @@ export { default as SearchInputCommon } from './SearchInputCommon/SearchInputCom
 export { default as HeaderCommon } from './HeaderCommon/HeaderCommon'
 export { default as GobackButtonCommon } from './GobackButtonCommon/GobackButtonCommon'
 export { default as InputCommon } from './InputCommon/InputCommon'
+export { default as WordCard } from './WordCard/WordCard'

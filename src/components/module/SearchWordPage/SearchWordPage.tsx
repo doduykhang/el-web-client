@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react'
 import api from '../../../api/index.api'
 import { AuthContext } from '../../../context/AuthContext'
 import { WordWithSave } from '../../../types/word'
-import { ButtonCommon, SearchInputCommon } from '../../common'
+import { ButtonCommon, SearchInputCommon, WordCard } from '../../common'
 import PaginationCommon from '../../common/PaginationCommon/PaginationCommon'
 
 const WORD_PAGE_SIZE = 10
@@ -26,7 +26,7 @@ const SearchWordPage = () => {
 	useEffect(() => {
 		const findWord = async () => {
 			if (query === '') return
-			const response = await api.wordApi.findWordsWithSave({
+			const response = await api.wordApi.findWords({
 				pageNum: currentPage - 1,
 				pageSize: WORD_PAGE_SIZE,
 				word: query,
@@ -70,40 +70,31 @@ const SearchWordPage = () => {
 					onSubmit={handleSearchWord}
 				/>
 			</div>
-			<div>
-				{words.map((word) => {
-					return (
-						<div
-							className='border-green border-2 mb-2 flex'
-							key={word.id}
-						>
-							<div className='flex-1'>
-								<h1>{word.word}</h1>
-								<p>Definition: {word.definition}</p>
-								<p>Example: {word.example}</p>
-								<p>Type: {word.type}</p>
-								<audio src={word.pronounciation} controls />
-							</div>
-							<div>
+			<div className='flex justify-center'>
+				<div className='grid grid-cols-3 gap-2'>
+					{words.map((word) => {
+						return (
+							<WordCard key={word.id} word={word}>
 								{auth.role === 'USER' &&
 									(!word.saved ? (
 										<ButtonCommon
 											onClick={() => saveWord(word.id)}
+											className='btn-success'
 										>
 											Save word
 										</ButtonCommon>
 									) : (
 										<ButtonCommon
 											onClick={() => removeWord(word.id)}
-											variant='error'
+											className='btn-error'
 										>
 											Remove word
 										</ButtonCommon>
 									))}
-							</div>
-						</div>
-					)
-				})}
+							</WordCard>
+						)
+					})}
+				</div>
 			</div>
 			<div className='flex justify-center'>
 				{words.length > 0 && (
@@ -129,7 +120,7 @@ const SearchWordPage = () => {
 			</Snackbar>
 
 			<Snackbar
-				open={isSnackbarOpen}
+				open={isRemoveSnackbarOpen}
 				autoHideDuration={6000}
 				onClose={() => setIsRemoveSnackbarOpen(false)}
 			>

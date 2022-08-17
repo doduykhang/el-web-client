@@ -16,13 +16,13 @@ const HeaderCommon = () => {
 			{
 				icon: <BookIcon className='header-icon' />,
 				title: 'Lesson',
-				link: 'temp',
+				link: '/',
 			},
 
 			{
 				icon: <TranslateIcon className='header-icon' />,
 				title: 'Word',
-				link: 'temp',
+				link: '/search-word',
 			},
 			{
 				icon: <FolderIcon className='header-icon' />,
@@ -38,9 +38,8 @@ const HeaderCommon = () => {
 		[]
 	)
 	return (
-		<nav className='sticky w-screen h-20 border-b-2 top-0 bg-white flex justify-center'>
-			{auth.firstName}
-			<ul className='flex gap-2 items-center h-full w-1/2 justify-between'>
+		<nav className='sticky w-screen h-20 border-b-2 top-0 bg-white flex justify-center z-20 items-center'>
+			<ul className=' flex gap-2 items-center h-full w-1/2 justify-between ml-auto'>
 				{headerItems.map((item, index) => (
 					<HeaderItem
 						key={index}
@@ -50,6 +49,15 @@ const HeaderCommon = () => {
 					/>
 				))}
 			</ul>
+			{auth.role === 'USER' && (
+				<div className='avatar placeholder ml-auto'>
+					<div className='bg-neutral-focus text-neutral-content rounded-full w-16 h-16'>
+						<span className='text-3xl capitalize'>
+							{auth.firstName.charAt(0)}
+						</span>
+					</div>
+				</div>
+			)}
 		</nav>
 	)
 }

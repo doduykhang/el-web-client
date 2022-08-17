@@ -53,8 +53,8 @@ const FlashcardPage = () => {
 
 	return (
 		<div className='u-page ring flex flex-col'>
-			<div>
-				<GobackButtonCommon title='Go back' link='link' />
+			<div className='px-4 mt-2'>
+				<GobackButtonCommon title='Go back' link='/' />
 			</div>
 			<div className='flex justify-center pt-5 px-5'>
 				<ProgressCommon progress={getPercentage()} />
@@ -66,11 +66,14 @@ const FlashcardPage = () => {
 							Congratulation, you've just leanrned {cards.length}{' '}
 							words
 						</span>
-						<div className='flex gap-2 mt-2'>
+						<div className='flex gap-2 mt-2 justify-center'>
 							<ButtonCommon onClick={goBack}>
 								Return to folder
 							</ButtonCommon>
-							<ButtonCommon onClick={learnAgain}>
+							<ButtonCommon
+								onClick={learnAgain}
+								className='btn-primary'
+							>
 								Learn again
 							</ButtonCommon>
 						</div>
@@ -82,14 +85,17 @@ const FlashcardPage = () => {
 							word={currentWord.word}
 							definition={currentWord.definition}
 						/>
-						<div className='flex gap-1 '>
+						<div className='flex gap-2 mt-2 justify-center'>
 							<ButtonCommon
-								variant='error'
 								onClick={handleAnswerWrong}
+								className='btn-error'
 							>
 								I dont't know
 							</ButtonCommon>
-							<ButtonCommon onClick={handleAnswerRight}>
+							<ButtonCommon
+								onClick={handleAnswerRight}
+								className='btn-success'
+							>
 								I know this
 							</ButtonCommon>
 						</div>

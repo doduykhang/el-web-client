@@ -1,5 +1,3 @@
-import { SearchIcon } from '../../../icons'
-
 interface props {
 	value: string
 	onChange: (value: string) => void
@@ -17,20 +15,14 @@ const SearchInputCommon = ({ value, onChange, onSubmit }: props) => {
 	}
 
 	return (
-		<form
-			className='ring-2 ring-black rounded-md p-1 flex w-fit'
-			onSubmit={handleSubmit}
-		>
+		<form onSubmit={handleSubmit}>
 			<input
-				className='focus:outline-none'
+				className='input input-bordered w-full max-w-xs'
 				type='text'
 				placeholder='search'
 				value={value}
 				onChange={onTextChange}
 			/>
-			<button type='submit'>
-				<SearchIcon />
-			</button>
 		</form>
 	)
 }
