@@ -26,4 +26,30 @@ export class FolderApi extends BaseApi {
 		const rs = await this.delete(`/${id}`)
 		return rs
 	}
+
+	getFolderWithSave = async (id: number) => {
+		const rs = await this.get(`/save/${id}`)
+		return rs
+	}
+
+	addWord = async (data: any) => {
+		const rs = await this.post(`/add`, data)
+		return rs
+	}
+
+	removeWord = async ({
+		folderID,
+		wordID,
+	}: {
+		folderID: number
+		wordID: number
+	}) => {
+		const rs = await this.delete(`/remove/${folderID}/${wordID}`)
+		return rs
+	}
+
+	getWordOfFolder = async (id: number) => {
+		const rs = await this.get(`/words/${id}`)
+		return rs
+	}
 }

@@ -4,12 +4,12 @@ import api from '../../../api/index.api'
 import { AuthContext } from '../../../context/AuthContext'
 import { setCard } from '../../../redux/card/cardSlice'
 import { useAppDispatch } from '../../../redux/hook'
-import { setTest } from '../../../redux/test/testSlice'
 import { LessonDetail } from '../../../types/lesson-detail'
 import { Manager } from '../../../types/manager'
 import { Test } from '../../../types/test'
 import { WordWithSave } from '../../../types/word'
-import { ButtonCommon, WordCard } from '../../common'
+import useModal from '../../../utils/useModal'
+import { ButtonCommon, SaveWordToFolderModal, WordCard } from '../../common'
 import LessonDetailInfo from './components/LessonDetailInfo/LessonDetailInfo'
 import TestCard from './components/TestCard/TestCard'
 
@@ -18,6 +18,8 @@ const LessonDetailPage = () => {
 	const [words, setWords] = useState<WordWithSave[]>([])
 	const [manager, setManager] = useState<Manager | null>(null)
 	const [tests, setTests] = useState<Test[]>([])
+	const [selectedWord, setSelectedWord] = useState(0)
+	const { isOpen, handleClose, handleOpen } = useModal()
 	const { auth } = useContext(AuthContext)
 
 	const { id } = useParams()
@@ -42,11 +44,6 @@ const LessonDetailPage = () => {
 		navigate('/flashcard')
 	}
 
-	const handleMockTest = () => {
-		dispatch(setTest(words))
-		navigate('/test')
-	}
-
 	const saveWord = async (id: number) => {
 		await api.wordApi.addWordToUser({ wordID: id })
 		setWords((old) => {
@@ -65,6 +62,11 @@ const LessonDetailPage = () => {
 				return word
 			})
 		})
+	}
+
+	const handleOpenAddWordModal = (id: number) => {
+		setSelectedWord(id)
+		handleOpen()
 	}
 
 	return (
@@ -98,6 +100,14 @@ const LessonDetailPage = () => {
 											Remove word
 										</ButtonCommon>
 									))}
+
+								<ButtonCommon
+									onClick={() =>
+										handleOpenAddWordModal(word.id)
+									}
+								>
+									Add word to folder
+								</ButtonCommon>
 							</WordCard>
 						))}
 					</div>
@@ -124,6 +134,11 @@ const LessonDetailPage = () => {
 					</div>
 				</div>
 			</div>
+			<SaveWordToFolderModal
+				isOpen={isOpen}
+				onClose={handleClose}
+				wordId={selectedWord}
+			/>
 		</div>
 	)
 }

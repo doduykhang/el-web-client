@@ -5,6 +5,7 @@ import { HeaderCommon } from './components/common'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import {
 	FlashcardPage,
+	FolderDetailPage,
 	FolderPage,
 	HomePage,
 	LessonDetailPage,
@@ -81,6 +82,19 @@ function App() {
 						</ProtectedRoute>
 					}
 				/>
+
+				<Route
+					path='/folder-detail/:id'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'USER'}
+							redirect='/login'
+						>
+							<FolderDetailPage />
+						</ProtectedRoute>
+					}
+				/>
+
 				<Route path='/mock-test' element={<TestPage />} />
 				<Route path='/test/:id' element={<RealTestPage />} />
 

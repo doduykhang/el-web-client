@@ -27,7 +27,7 @@ const HeaderCommon = () => {
 			{
 				icon: <FolderIcon className='header-icon' />,
 				title: 'Folder',
-				link: 'temp',
+				link: '/folder',
 			},
 			{
 				icon: <PresentationChartIcon className='header-icon' />,
