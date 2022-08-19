@@ -14,4 +14,9 @@ export class TestApi extends BaseApi {
 		const rs = await this.post(`/user/submit-test`, data)
 		return rs
 	}
+
+	testHistory = async () => {
+		const rs = await this.get(`/user/history`)
+		return rs
+	}
 }

@@ -11,6 +11,7 @@ import {
 	LessonDetailPage,
 	SearchWordPage,
 } from './components/module'
+import HistoryPage from './components/module/HistoryPage/HistoryPage'
 import LoginPage from './components/module/LoginPage/LoginPage'
 import ProfilePage from './components/module/ProfilePage/ProfilePage'
 import RealTestPage from './components/module/RealTestPage/RealTestPage'
@@ -91,6 +92,18 @@ function App() {
 							redirect='/login'
 						>
 							<FolderDetailPage />
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path='/history/'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'USER'}
+							redirect='/login'
+						>
+							<HistoryPage />
 						</ProtectedRoute>
 					}
 				/>
