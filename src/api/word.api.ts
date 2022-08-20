@@ -6,6 +6,12 @@ export class WordApi extends BaseApi {
 		super('api/word')
 	}
 
+	getWords = async (data: any) => {
+		const query = serializeQuery(data)
+		const rs = await this.get(`/all?${query}`)
+		return rs
+	}
+
 	findWords = async (data: any) => {
 		const query = serializeQuery(data)
 		const rs = await this.get(`/maybe/all?${query}`)
@@ -30,6 +36,21 @@ export class WordApi extends BaseApi {
 
 	getWordOfUser = async () => {
 		const rs = await this.get(`/user`)
+		return rs
+	}
+
+	createWord = async (data: any) => {
+		const rs = await this.post(`/`, data)
+		return rs
+	}
+
+	updateWord = async (data: any) => {
+		const rs = await this.put(`/`, data)
+		return rs
+	}
+
+	deleteWord = async (id: number) => {
+		const rs = await this.delete(`/${id}`)
 		return rs
 	}
 }

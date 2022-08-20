@@ -11,11 +11,15 @@ import {
 	LessonDetailPage,
 	SearchWordPage,
 } from './components/module'
+import AdminPage from './components/module/AdminPage/AdminPage'
+import HistoryDetailPage from './components/module/HistoryDetailPage/HistoryDetailPage'
 import HistoryPage from './components/module/HistoryPage/HistoryPage'
+import LessonCURD from './components/module/LessonCRUD/LessonCRUD'
 import LoginPage from './components/module/LoginPage/LoginPage'
 import ProfilePage from './components/module/ProfilePage/ProfilePage'
 import RealTestPage from './components/module/RealTestPage/RealTestPage'
-import TestPage from './components/module/TestPage/TestPage'
+import TestCRUD from './components/module/TestCRUD/TestCRUD'
+import WordCURD from './components/module/WordCRUD/WordCRUD'
 import { AuthContext } from './context/AuthContext'
 
 function App() {
@@ -45,27 +49,63 @@ function App() {
 	return (
 		<BrowserRouter>
 			<HeaderCommon />
+
 			<Routes>
-				<Route path='/' element={<HomePage />} />
+				<Route
+					path='/'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role !== 'ADMIN'}
+							redirect={auth.role === 'ADMIN' ? '/admin' : '/'}
+						>
+							<HomePage />
+						</ProtectedRoute>
+					}
+				/>
+
 				<Route
 					path='/login'
 					element={
-						<ProtectedRoute isAllow={auth.role === ''} redirect='/'>
+						<ProtectedRoute
+							isAllow={auth.role === ''}
+							redirect={auth.role === 'ADMIN' ? '/admin' : '/'}
+						>
 							<LoginPage />
 						</ProtectedRoute>
 					}
 				/>
+
 				<Route
 					path='/lesson-detail/:id'
-					element={<LessonDetailPage />}
+					element={
+						<ProtectedRoute
+							isAllow={auth.role !== 'ADMIN'}
+							redirect={auth.role === 'ADMIN' ? '/admin' : '/'}
+						>
+							<LessonDetailPage />
+						</ProtectedRoute>
+					}
 				/>
-				<Route path='/flashcard' element={<FlashcardPage />} />
+
+				<Route
+					path='/flashcard'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'USER'}
+							redirect={
+								auth.role === 'ADMIN' ? '/admin' : '/login'
+							}
+						>
+							<FlashcardPage />
+						</ProtectedRoute>
+					}
+				/>
 				<Route
 					path='/profile'
 					element={
 						<ProtectedRoute
 							isAllow={auth.role === 'ADMIN'}
-							redirect='/login'
+							redirect={auth.role === 'ADMIN' ? '/admin' : '/'}
 						>
 							<ProfilePage />
 						</ProtectedRoute>
@@ -77,7 +117,9 @@ function App() {
 					element={
 						<ProtectedRoute
 							isAllow={auth.role === 'USER'}
-							redirect='/login'
+							redirect={
+								auth.role === 'ADMIN' ? '/admin' : '/login'
+							}
 						>
 							<FolderPage />
 						</ProtectedRoute>
@@ -89,7 +131,9 @@ function App() {
 					element={
 						<ProtectedRoute
 							isAllow={auth.role === 'USER'}
-							redirect='/login'
+							redirect={
+								auth.role === 'ADMIN' ? '/admin' : '/login'
+							}
 						>
 							<FolderDetailPage />
 						</ProtectedRoute>
@@ -101,17 +145,101 @@ function App() {
 					element={
 						<ProtectedRoute
 							isAllow={auth.role === 'USER'}
-							redirect='/login'
+							redirect={
+								auth.role === 'ADMIN' ? '/admin' : '/login'
+							}
 						>
 							<HistoryPage />
 						</ProtectedRoute>
 					}
 				/>
 
-				<Route path='/mock-test' element={<TestPage />} />
-				<Route path='/test/:id' element={<RealTestPage />} />
+				<Route
+					path='/history-detail/:testId/:id'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'USER'}
+							redirect={
+								auth.role === 'ADMIN' ? '/admin' : '/login'
+							}
+						>
+							<HistoryDetailPage />
+						</ProtectedRoute>
+					}
+				/>
 
-				<Route path='/search-word' element={<SearchWordPage />} />
+				<Route
+					path='/admin'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'ADMIN'}
+							redirect='/login'
+						>
+							<AdminPage />
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path='/test/:id'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'USER'}
+							redirect={
+								auth.role === 'ADMIN' ? '/admin' : '/login'
+							}
+						>
+							<RealTestPage />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path='/search-word'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role !== 'ADMIN'}
+							redirect={auth.role === 'ADMIN' ? '/admin' : '/'}
+						>
+							<SearchWordPage />
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path='/admin/word'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'ADMIN'}
+							redirect={'/'}
+						>
+							<WordCURD />
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path='/admin/lesson'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'ADMIN'}
+							redirect={'/'}
+						>
+							<LessonCURD />
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path='/admin/test/:id'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'ADMIN'}
+							redirect={'/'}
+						>
+							<TestCRUD />
+						</ProtectedRoute>
+					}
+				/>
 			</Routes>
 		</BrowserRouter>
 	)

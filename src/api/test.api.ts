@@ -19,4 +19,29 @@ export class TestApi extends BaseApi {
 		const rs = await this.get(`/user/history`)
 		return rs
 	}
+
+	testHistoryDetail = async (id: number) => {
+		const rs = await this.get(`/user/history-detail/${id}`)
+		return rs
+	}
+
+	testHistoryStat = async (id: number) => {
+		const rs = await this.get(`/user/test-stat/${id}`)
+		return rs
+	}
+
+	createTest = async (data: any) => {
+		const rs = await this.post(`/`, data)
+		return rs
+	}
+
+	updateTest = async (data: any) => {
+		const rs = await this.put(`/`, data)
+		return rs
+	}
+
+	deleteTest = async (id: number) => {
+		const rs = await this.delete(`/${id}`)
+		return rs
+	}
 }

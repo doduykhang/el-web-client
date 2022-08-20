@@ -85,7 +85,7 @@ const RealTestPage = () => {
 	}
 
 	return (
-		<div className='u-page'>
+		<div className=''>
 			<div className='flex h-full gap-2'>
 				<SideBar
 					currentQuestion={currentQuestion}

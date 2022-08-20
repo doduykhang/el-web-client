@@ -16,11 +16,14 @@ const HistoryPage = () => {
 
 	return (
 		<div className='u-page'>
-			<div className='flex flex-col gap-2'>
-				{tests.map((test) => {
-					return <TestHistoryCard {...test} />
-				})}
-			</div>
+			<h1 className='text-5xl font-bold text-center mb-4'>
+				Test history
+			</h1>
+				<div className='flex w-full flex-col gap-2 items-center'>
+					{tests.map((test) => {
+						return <TestHistoryCard {...test} />
+					})}
+				</div>
 		</div>
 	)
 }

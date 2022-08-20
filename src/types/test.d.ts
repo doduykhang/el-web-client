@@ -16,3 +16,11 @@ export interface TestHistory {
 	lessonId: number
 	lessonName: string
 }
+
+export interface TestHistoryDetail {
+	testId: number
+	content: string
+	questionType: "CHOICE" | "FILL" |"AUDIO"
+	userAnswer: string
+	answer: string
+}

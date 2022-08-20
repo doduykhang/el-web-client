@@ -53,7 +53,11 @@ const TestHistoryCard = ({
 						<p>Start time: {new Date(startTime).toUTCString()}</p>
 						<p>Time: {time}</p>
 						<div className='card-actions justify-end'>
-							<button className='btn btn-primary'>Detail</button>
+							<Link to={`/history-detail/${testId}/${id}`}>
+								<button className='btn btn-primary'>
+									Detail
+								</button>
+							</Link>
 							<Link to={`/lesson-detail/${lessonId}`}>
 								<button className='btn btn-primary'>
 									Go to lesson

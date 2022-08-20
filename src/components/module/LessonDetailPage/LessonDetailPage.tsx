@@ -7,7 +7,7 @@ import { useAppDispatch } from '../../../redux/hook'
 import { LessonDetail } from '../../../types/lesson-detail'
 import { Manager } from '../../../types/manager'
 import { Test } from '../../../types/test'
-import { WordWithSave } from '../../../types/word'
+import { word } from '../../../types/word'
 import useModal from '../../../utils/useModal'
 import { ButtonCommon, SaveWordToFolderModal, WordCard } from '../../common'
 import LessonDetailInfo from './components/LessonDetailInfo/LessonDetailInfo'
@@ -15,7 +15,7 @@ import TestCard from './components/TestCard/TestCard'
 
 const LessonDetailPage = () => {
 	const [lessonDetail, setLessonDetail] = useState<LessonDetail | null>(null)
-	const [words, setWords] = useState<WordWithSave[]>([])
+	const [words, setWords] = useState<word[]>([])
 	const [manager, setManager] = useState<Manager | null>(null)
 	const [tests, setTests] = useState<Test[]>([])
 	const [selectedWord, setSelectedWord] = useState(0)
@@ -44,26 +44,6 @@ const LessonDetailPage = () => {
 		navigate('/flashcard')
 	}
 
-	const saveWord = async (id: number) => {
-		await api.wordApi.addWordToUser({ wordID: id })
-		setWords((old) => {
-			return old.map((word) => {
-				if (word.id === id) word.saved = true
-				return word
-			})
-		})
-	}
-
-	const removeWord = async (id: number) => {
-		await api.wordApi.removeWordFromUser({ wordID: id })
-		setWords((old) => {
-			return old.map((word) => {
-				if (word.id === id) word.saved = false
-				return word
-			})
-		})
-	}
-
 	const handleOpenAddWordModal = (id: number) => {
 		setSelectedWord(id)
 		handleOpen()
@@ -84,39 +64,27 @@ const LessonDetailPage = () => {
 					<div className='grid grid-cols-2 gap-2'>
 						{words.map((word) => (
 							<WordCard key={word.id} word={word}>
-								{auth.role === 'USER' &&
-									(!word.saved ? (
-										<ButtonCommon
-											onClick={() => saveWord(word.id)}
-											className='btn-success'
-										>
-											Save word
-										</ButtonCommon>
-									) : (
-										<ButtonCommon
-											onClick={() => removeWord(word.id)}
-											className='btn-error'
-										>
-											Remove word
-										</ButtonCommon>
-									))}
-
-								<ButtonCommon
-									onClick={() =>
-										handleOpenAddWordModal(word.id)
-									}
-								>
-									Add word to folder
-								</ButtonCommon>
+								{auth.role === 'USER' && (
+									<ButtonCommon
+										onClick={() =>
+											handleOpenAddWordModal(word.id)
+										}
+										className='btn-primary'
+									>
+										Add word to folder
+									</ButtonCommon>
+								)}
 							</WordCard>
 						))}
 					</div>
-					<button
-						className='btn btn-primary'
-						onClick={handleLearnWithFlashcard}
-					>
-						Learn with flascard
-					</button>
+					{auth.role === 'USER' && (
+						<button
+							className='btn btn-primary'
+							onClick={handleLearnWithFlashcard}
+						>
+							Learn with flascard
+						</button>
+					)}
 				</div>
 				<hr className='border-b-black border-b-2 my-2' />
 				<h1 className='text-2xl mb-2 text-center'>Tests</h1>

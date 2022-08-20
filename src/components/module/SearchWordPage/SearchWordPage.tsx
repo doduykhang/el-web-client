@@ -2,7 +2,7 @@ import { Alert, Snackbar } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import api from '../../../api/index.api'
 import { AuthContext } from '../../../context/AuthContext'
-import { WordWithSave } from '../../../types/word'
+import { word } from '../../../types/word'
 import useModal from '../../../utils/useModal'
 import PaginationCommon from '../../common/PaginationCommon/PaginationCommon'
 import {
@@ -18,7 +18,7 @@ const SearchWordPage = () => {
 	const [query, setQuery] = useState('')
 	const [input, setInput] = useState('')
 	const [total, setTotal] = useState(0)
-	const [words, setWords] = useState<WordWithSave[]>([])
+	const [words, setWords] = useState<word[]>([])
 	const [currentPage, setCurrentPage] = useState(1)
 	const [selectedWord, setSelectedWord] = useState(0)
 	const { auth } = useContext(AuthContext)
@@ -45,30 +45,6 @@ const SearchWordPage = () => {
 		findWord()
 	}, [currentPage, query])
 
-	const saveWord = async (id: number) => {
-		await api.wordApi.addWordToUser({ wordID: id })
-		setWords((old) => {
-			return old.map((word) => {
-				if (word.id === id) word.saved = true
-				return word
-			})
-		})
-
-		setIsSnackbarOpen(true)
-	}
-
-	const removeWord = async (id: number) => {
-		await api.wordApi.removeWordFromUser({ wordID: id })
-		setWords((old) => {
-			return old.map((word) => {
-				if (word.id === id) word.saved = false
-				return word
-			})
-		})
-
-		setIsRemoveSnackbarOpen(true)
-	}
-
 	const handleOpenAddWordModal = (id: number) => {
 		setSelectedWord(id)
 		handleOpen()
@@ -76,6 +52,9 @@ const SearchWordPage = () => {
 
 	return (
 		<div className='u-page p-2'>
+			<h1 className='text-5xl font-bold text-center mb-4'>
+				Search words
+			</h1>
 			<div className='flex justify-center'>
 				<SearchInputCommon
 					value={input}
@@ -89,33 +68,15 @@ const SearchWordPage = () => {
 						return (
 							<WordCard key={word.id} word={word}>
 								<>
-									{auth.role === 'USER' &&
-										(!word.saved ? (
-											<ButtonCommon
-												onClick={() =>
-													saveWord(word.id)
-												}
-												className='btn-success'
-											>
-												Save word
-											</ButtonCommon>
-										) : (
-											<ButtonCommon
-												onClick={() =>
-													removeWord(word.id)
-												}
-												className='btn-error'
-											>
-												Remove word
-											</ButtonCommon>
-										))}
-									<ButtonCommon
-										onClick={() =>
-											handleOpenAddWordModal(word.id)
-										}
-									>
-										Add word to folder
-									</ButtonCommon>
+									{auth.role === 'USER' && (
+										<ButtonCommon
+											onClick={() =>
+												handleOpenAddWordModal(word.id)
+											}
+										>
+											Add word to folder
+										</ButtonCommon>
+									)}
 								</>
 							</WordCard>
 						)

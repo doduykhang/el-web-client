@@ -8,6 +8,6 @@
 	}
 
 	.u-page {
-		@apply h-[calc(100vh-5rem)];
+		@apply h-[calc(100vh-5rem)] p-10;
 	}
 }

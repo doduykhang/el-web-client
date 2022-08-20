@@ -2,9 +2,8 @@ import { Modal } from '@mui/material'
 import { useEffect, useState } from 'react'
 import api from '../../../api/index.api'
 import { Folder } from '../../../types/folder'
-import { word } from '../../../types/word'
 import useModal from '../../../utils/useModal'
-import { WordCard } from '../../common'
+import PaginationCommon from '../../common/PaginationCommon/PaginationCommon'
 import CreateFolderForm from './components/CreateFolderForm'
 import FolderCard from './components/FolderCard'
 import UpdateFolderForm from './components/UpdateFolderForm'
@@ -12,11 +11,10 @@ import UpdateFolderForm from './components/UpdateFolderForm'
 const FOLDER_PAGE_SIZE = 10
 
 const FolderPage = () => {
-	const [value, setValue] = useState('All')
-	const [words, setWords] = useState<word[]>([])
 	const [folders, setFolders] = useState<Folder[]>([])
 	const [total, setTotal] = useState(0)
 	const [selectedFolder, setSelectedFolder] = useState<Folder | undefined>()
+	const [currentPage, setCurrentPage] = useState(1)
 
 	const { isOpen, handleClose, handleOpen } = useModal()
 
@@ -31,27 +29,18 @@ const FolderPage = () => {
 		handleClose: closeDeleteModal,
 		handleOpen: openDeleteModal,
 	} = useModal()
-	useEffect(() => {
-		const findWord = async () => {
-			if (value === 'All') {
-				const words = await api.wordApi.getWordOfUser()
-				setWords(words)
-			}
-		}
-		findWord()
-	}, [value])
 
 	useEffect(() => {
 		const getFolder = async () => {
 			const res = await api.folderApi.getFolder({
-				pageNum: 0,
+				pageNum: currentPage - 1,
 				pageSize: FOLDER_PAGE_SIZE,
 			})
 			setFolders(res.data || [])
 			setTotal(res.total)
 		}
 		getFolder()
-	}, [value])
+	}, [currentPage])
 
 	const handleCreateFolder = async ({ name }: { name: string }) => {
 		const res = await api.folderApi.createFolder({ name })
@@ -96,26 +85,14 @@ const FolderPage = () => {
 	}
 
 	return (
-		<div>
-			<div className='flex justify-center'>
-				<select
-					className='select select-bordered w-full max-w-xs'
-					value={value}
-					onChange={(e) => {
-						setValue(e.target.value)
-					}}
-				>
-					<option disabled selected>
-						Folder
-					</option>
-					<option value='All'>All</option>
-				</select>
+		<div className='u-page'>
+			<h1 className='text-5xl font-bold text-center mb-4'>Folders</h1>
+			<div className='ml-20'>
+				<button className='btn btn-primary' onClick={handleOpen}>
+					Create folder
+				</button>
 			</div>
-
-			<button className='btn btn-primary' onClick={handleOpen}>
-				Create folder
-			</button>
-			<div className='flex justify-center'>
+			<div className='flex flex-col justify-center items-center'>
 				<div className='grid grid-cols-3 gap-2'>
 					{folders.map((folder) => (
 						<FolderCard key={folder.id} folder={folder}>
@@ -136,6 +113,15 @@ const FolderPage = () => {
 						</FolderCard>
 					))}
 				</div>
+
+				{folders.length > 0 && (
+					<PaginationCommon
+						total={total}
+						pageSize={FOLDER_PAGE_SIZE}
+						currentPage={currentPage}
+						onChange={setCurrentPage}
+					/>
+				)}
 			</div>
 			<Modal open={isOpen} onClose={handleClose}>
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>

@@ -67,9 +67,7 @@ const FlashcardPage = () => {
 							words
 						</span>
 						<div className='flex gap-2 mt-2 justify-center'>
-							<ButtonCommon onClick={goBack}>
-								Return to folder
-							</ButtonCommon>
+							<ButtonCommon onClick={goBack}>Return</ButtonCommon>
 							<ButtonCommon
 								onClick={learnAgain}
 								className='btn-primary'
