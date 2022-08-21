@@ -6,12 +6,14 @@ import { Test } from '../../../types/test'
 import { Link, useParams } from 'react-router-dom'
 import CreateTestForm from './CreateTestForm/CreateTestForm'
 import UpdateTestForm from './UpdateTestForm/UpdateTestForm'
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
-import { firebaseApp } from '../../../firebase'
+import { lesson } from '../../../types/lesson'
+import { GobackButtonCommon } from '../../common'
+import { message } from 'antd'
 
 const TestCRUD = () => {
 	const [data, setData] = useState<Test[]>([])
 	const [selected, setSelected] = useState<Test | undefined>()
+	const [lesson, setLesson] = useState<lesson | undefined>()
 	const { id } = useParams()
 
 	const find = useCallback(async () => {
@@ -24,6 +26,16 @@ const TestCRUD = () => {
 	useEffect(() => {
 		find()
 	}, [find])
+
+	useEffect(() => {
+		const getLesson = async () => {
+			if (id) {
+				const response = await api.lessonApi.getLessonDetail(+id)
+				setLesson(response.lesson)
+			}
+		}
+		getLesson()
+	}, [id])
 
 	const {
 		isOpen: isCreateFormOpen,
@@ -43,23 +55,20 @@ const TestCRUD = () => {
 		handleClose: closeDeleteForm,
 	} = useModal()
 
-	const handleCreate = (data: any) => {
-		const storage = getStorage(firebaseApp)
-		const storageRef = ref(
-			storage,
-			`audio/${data.pronounciation.name + Date.now()}`
-		)
-
-		uploadBytes(storageRef, data.pronounciation).then(async (snapshot) => {
-			const url = await getDownloadURL(snapshot.ref)
-			const res = await api.wordApi.createWord({
-				...data,
-				pronounciation: url,
-			})
-			console.log(res)
-			closeCreateForm()
-			find()
-		})
+	const handleCreate = async (data: any) => {
+		try {
+			if (id) {
+				const res = await api.testApi.createTest({
+					...data,
+					lessonID: +id,
+				})
+				find()
+				closeCreateForm()
+				message.success('Created')
+			}
+		} catch (err: any) {
+			message.error(err.message)
+		}
 	}
 
 	const handelOpenUpdateForm = (word: Test) => {
@@ -68,10 +77,19 @@ const TestCRUD = () => {
 	}
 
 	const handleUpdate = async (data: any) => {
-		if (id) {
-			const res = await api.testApi.updateTest({ ...data, lessonID: +id })
-			find()
+		try {
+			if (id) {
+				const res = await api.testApi.updateTest({
+					...data,
+					lessonID: +id,
+				})
+				find()
+				closeUpdateForm()
+				message.success('Updated')
+			}
+		} catch (err: any) {
 			closeUpdateForm()
+			message.error(err.message)
 		}
 	}
 
@@ -81,14 +99,42 @@ const TestCRUD = () => {
 	}
 
 	const handleDelete = async () => {
-		const res = await api.testApi.deleteTest(selected?.id ?? 0)
+		try {
+			const res = await api.testApi.deleteTest(selected?.id ?? 0)
+			find()
+			closeDeleteForm()
+			message.success('Deleted')
+		} catch (err: any) {
+			message.error('some thing went wrong')
+		}
+	}
 
-		find()
-		closeDeleteForm()
+	const handlePublish = async (id: number) => {
+		try {
+			const res = await api.testApi.publishTest(id)
+			message.success('Test published')
+			find()
+		} catch (err: any) {
+			message.error(err.message)
+		}
+	}
+
+	const handleUnpublish = async (id: number) => {
+		try {
+			const res = await api.testApi.unpublishTest(id)
+			message.success('Test unpublished')
+			find()
+		} catch (err: any) {
+			message.error(err.message)
+		}
 	}
 
 	return (
 		<div className='u-page'>
+			<GobackButtonCommon title='Go back' />
+			<h1 className='text-5xl font-bold text-center mb-4'>
+				Manage tests of {lesson?.lessonName}
+			</h1>
 			<Modal open={isCreateFormOpen} onClose={closeCreateForm}>
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>
 					<CreateTestForm onCreate={handleCreate} />
@@ -145,22 +191,30 @@ const TestCRUD = () => {
 								<td>
 									{
 										<div className='flex gap-2'>
-											<button
-												className='btn btn-warning'
-												onClick={() =>
-													handelOpenUpdateForm(d)
-												}
-											>
-												Update
-											</button>
-											<button
-												className='btn btn-error'
-												onClick={() =>
-													handleOpenDeleteForm(d)
-												}
-											>
-												Delete
-											</button>
+											{!d.published && (
+												<>
+													<button
+														className='btn btn-warning'
+														onClick={() =>
+															handelOpenUpdateForm(
+																d
+															)
+														}
+													>
+														Update
+													</button>
+													<button
+														className='btn btn-error'
+														onClick={() =>
+															handleOpenDeleteForm(
+																d
+															)
+														}
+													>
+														Delete
+													</button>
+												</>
+											)}
 
 											<Link
 												to={`/admin/questions/${d.id}`}
@@ -169,6 +223,25 @@ const TestCRUD = () => {
 													Question
 												</button>
 											</Link>
+											{d.published ? (
+												<button
+													className='btn btn-success'
+													onClick={() =>
+														handleUnpublish(d.id)
+													}
+												>
+													Unpublish
+												</button>
+											) : (
+												<button
+													className='btn btn-success'
+													onClick={() =>
+														handlePublish(d.id)
+													}
+												>
+													Publish
+												</button>
+											)}
 										</div>
 									}
 								</td>

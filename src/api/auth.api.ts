@@ -5,6 +5,11 @@ export class AuthApi extends BaseApi {
 		super('')
 	}
 
+	register = async (data: any) => {
+		const rs = await this.post('register', data)
+		return rs
+	}
+
 	login = async (data: any) => {
 		const rs = await this.post('login', data)
 		return rs

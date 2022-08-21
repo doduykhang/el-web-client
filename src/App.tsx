@@ -1,6 +1,8 @@
 import { useContext, useEffect, useState } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import api from './api/index.api'
+
+import 'antd/dist/antd.css'
 import { HeaderCommon } from './components/common'
 import ProtectedRoute from './components/common/ProtectedRoute'
 import {
@@ -23,6 +25,7 @@ import RealTestPage from './components/module/RealTestPage/RealTestPage'
 import TestCRUD from './components/module/TestCRUD/TestCRUD'
 import WordCURD from './components/module/WordCRUD/WordCRUD'
 import { AuthContext } from './context/AuthContext'
+import RegisterPage from './components/module/RegisterPage/RegisterPage'
 
 function App() {
 	const { auth, update } = useContext(AuthContext)
@@ -73,6 +76,18 @@ function App() {
 							redirect={auth.role === 'ADMIN' ? '/admin' : '/'}
 						>
 							<LoginPage />
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path='/register'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === ''}
+							redirect={auth.role === 'ADMIN' ? '/admin' : '/'}
+						>
+							<RegisterPage />
 						</ProtectedRoute>
 					}
 				/>

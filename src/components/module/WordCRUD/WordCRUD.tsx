@@ -8,6 +8,7 @@ import { firebaseApp } from '../../../firebase'
 import useModal from '../../../utils/useModal'
 import { Modal } from '@mui/material'
 import UpdateWordForm from './UpdateWordForm/UpdateWordForm'
+import { message } from 'antd'
 
 const WORD_PAGE_SIZE = 10
 
@@ -64,6 +65,7 @@ const WordCURD = () => {
 			})
 			console.log(res)
 			closeCreateForm()
+			message.success('Created')
 			find()
 		})
 	}
@@ -86,6 +88,8 @@ const WordCURD = () => {
 				...data,
 				pronounciation: url,
 			})
+
+			message.success('Updated')
 			find()
 			closeUpdateForm()
 		})
@@ -98,13 +102,16 @@ const WordCURD = () => {
 
 	const handleDelete = async () => {
 		const res = await api.wordApi.deleteWord(selected?.id ?? 0)
-
+		message.success('Deleted')
 		find()
 		closeDeleteForm()
 	}
 
 	return (
 		<div className='u-page'>
+			<h1 className='text-5xl font-bold text-center mb-4'>
+				Manage words
+			</h1>
 			<Modal open={isCreateFormOpen} onClose={closeCreateForm}>
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>
 					<CreateWordForm onCreate={handleCreate} />
@@ -161,7 +168,12 @@ const WordCURD = () => {
 								<td>{d.definition}</td>
 								<td>{d.example}</td>
 								<td>{d.type}</td>
-								<td>{d.type}</td>
+								<td>
+									<audio
+										src={d.pronounciation}
+										controls
+									></audio>
+								</td>
 								<td>
 									{
 										<div className='flex gap-2'>

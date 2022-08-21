@@ -1,17 +1,20 @@
 import { useCallback, useEffect, useState } from 'react'
 import api from '../../../api/index.api'
 import useModal from '../../../utils/useModal'
-import { Modal } from '@mui/material'
+import { Modal, Popover } from '@mui/material'
 import { Link, useParams } from 'react-router-dom'
 import { Question } from '../../../types/questions'
 import CreateQuestionForm from './CreateQuestionForm/CreateQuestionForm'
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import { firebaseApp } from '../../../firebase'
 import UpdateQuestionForm from './UpdateQuestionForm/UpdateQuestionForm'
+import { GobackButtonCommon } from '../../common'
+import { Test } from '../../../types/test'
 
 const QuestionCRUD = () => {
 	const [data, setData] = useState<Question[]>([])
 	const [selected, setSelected] = useState<Question | undefined>()
+	const [test, setTest] = useState<Test | undefined>()
 	const { id } = useParams()
 
 	const find = useCallback(async () => {
@@ -24,6 +27,16 @@ const QuestionCRUD = () => {
 	useEffect(() => {
 		find()
 	}, [find])
+
+	useEffect(() => {
+		const getTest = async () => {
+			if (id) {
+				const reponse = await api.testApi.findOne(+id)
+				setTest(reponse)
+			}
+		}
+		getTest()
+	}, [])
 
 	const {
 		isOpen: isCreateFormOpen,
@@ -60,7 +73,6 @@ const QuestionCRUD = () => {
 					content: url,
 					testID: +id,
 				})
-				console.log(res)
 				closeCreateForm()
 				find()
 			})
@@ -104,6 +116,10 @@ const QuestionCRUD = () => {
 
 	return (
 		<div className='u-page'>
+			<GobackButtonCommon title='Go back' />
+			<h1 className='text-5xl font-bold text-center mb-4'>
+				Manage questions
+			</h1>
 			<Modal open={isCreateFormOpen} onClose={closeCreateForm}>
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>
 					<CreateQuestionForm onCreate={handleCreate} />
@@ -135,17 +151,18 @@ const QuestionCRUD = () => {
 					</div>
 				</div>
 			</Modal>
-
-			<button className='btn btn-primary' onClick={openCreateForm}>
-				Create
-			</button>
+			{test && !test.published && (
+				<button className='btn btn-primary' onClick={openCreateForm}>
+					Create
+				</button>
+			)}
 			<table className='table w-full'>
 				<thead>
 					<tr>
 						<th className='p-2'>#</th>
 						<th>Content</th>
 						<th>Answer</th>
-						<th>QuestionType</th>
+						<th>Question Type</th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -166,22 +183,30 @@ const QuestionCRUD = () => {
 								<td>
 									{
 										<div className='flex gap-2'>
-											<button
-												className='btn btn-warning'
-												onClick={() =>
-													handelOpenUpdateForm(d)
-												}
-											>
-												Update
-											</button>
-											<button
-												className='btn btn-error'
-												onClick={() =>
-													handleOpenDeleteForm(d)
-												}
-											>
-												Delete
-											</button>
+											{test && !test.published && (
+												<>
+													<button
+														className='btn btn-warning'
+														onClick={() =>
+															handelOpenUpdateForm(
+																d
+															)
+														}
+													>
+														Update
+													</button>
+													<button
+														className='btn btn-error'
+														onClick={() =>
+															handleOpenDeleteForm(
+																d
+															)
+														}
+													>
+														Delete
+													</button>
+												</>
+											)}
 											{d.questionType === 'CHOICE' && (
 												<Link
 													to={`/admin/options/${d.id}`}

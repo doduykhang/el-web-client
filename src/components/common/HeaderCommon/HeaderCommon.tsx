@@ -49,9 +49,16 @@ const HeaderCommon = () => {
 			},
 
 			{
-				icon: <PresentationChartIcon className='header-icon' />,
+				icon: <TranslateIcon className='header-icon' />,
 				title: 'Words',
 				link: '/admin/word',
+				visible: auth.role === 'ADMIN',
+			},
+
+			{
+				icon: <BookIcon className='header-icon' />,
+				title: 'Lessons',
+				link: '/admin/lesson',
 				visible: auth.role === 'ADMIN',
 			},
 		],

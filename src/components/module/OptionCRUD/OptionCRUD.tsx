@@ -8,10 +8,13 @@ import { firebaseApp } from '../../../firebase'
 import { Option } from '../../../types/option'
 import CreateOptionForm from './CreateOptionForm/CreateOptionForm'
 import UpdateOptionForm from './UpdateOptionForm/UpdateOptionForm'
+import { Test } from '../../../types/test'
+import { GobackButtonCommon } from '../../common'
 
 const OptionCRUD = () => {
 	const [data, setData] = useState<Option[]>([])
 	const [selected, setSelected] = useState<Option | undefined>()
+	const [test, setTest] = useState<Test | undefined>()
 	const { id } = useParams()
 
 	const find = useCallback(async () => {
@@ -24,6 +27,16 @@ const OptionCRUD = () => {
 	useEffect(() => {
 		find()
 	}, [find])
+
+	useEffect(() => {
+		const findTest = async () => {
+			if (id) {
+				const findTest = await api.testApi.checkPublished(+id)
+				setTest(findTest)
+			}
+		}
+		findTest()
+	}, [])
 
 	const {
 		isOpen: isCreateFormOpen,
@@ -84,7 +97,13 @@ const OptionCRUD = () => {
 
 	return (
 		<div className='u-page'>
+
+			<GobackButtonCommon title='Go back' />
+			<h1 className='text-5xl font-bold text-center mb-4'>
+				Manage options
+			</h1>
 			<Modal open={isCreateFormOpen} onClose={closeCreateForm}>
+
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>
 					<CreateOptionForm onCreate={handleCreate} />
 				</div>
@@ -116,9 +135,11 @@ const OptionCRUD = () => {
 				</div>
 			</Modal>
 
-			<button className='btn btn-primary' onClick={openCreateForm}>
-				Create
-			</button>
+			{test && !test.published && (
+				<button className='btn btn-primary' onClick={openCreateForm}>
+					Create
+				</button>
+			)}
 			<table className='table w-full'>
 				<thead>
 					<tr>
@@ -138,22 +159,30 @@ const OptionCRUD = () => {
 								<td>
 									{
 										<div className='flex gap-2'>
-											<button
-												className='btn btn-warning'
-												onClick={() =>
-													handelOpenUpdateForm(d)
-												}
-											>
-												Update
-											</button>
-											<button
-												className='btn btn-error'
-												onClick={() =>
-													handleOpenDeleteForm(d)
-												}
-											>
-												Delete
-											</button>
+											{test && !test.published && (
+												<>
+													<button
+														className='btn btn-warning'
+														onClick={() =>
+															handelOpenUpdateForm(
+																d
+															)
+														}
+													>
+														Update
+													</button>
+													<button
+														className='btn btn-error'
+														onClick={() =>
+															handleOpenDeleteForm(
+																d
+															)
+														}
+													>
+														Delete
+													</button>
+												</>
+											)}
 										</div>
 									}
 								</td>

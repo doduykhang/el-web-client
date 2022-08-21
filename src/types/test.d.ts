@@ -3,6 +3,7 @@ export interface Test {
 	testName: string
 	level: number
 	time: number
+  published: number
 }
 
 export interface TestHistory {

@@ -1,3 +1,4 @@
+import { message } from 'antd'
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../../api/index.api'
@@ -24,7 +25,7 @@ const LoginPage = () => {
 			})
 			navigate('/')
 		} catch (err: any) {
-			console.log(err.message)
+			message.error('Wrong username or password')
 		}
 	}
 

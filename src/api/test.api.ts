@@ -44,4 +44,24 @@ export class TestApi extends BaseApi {
 		const rs = await this.delete(`/${id}`)
 		return rs
 	}
+
+	publishTest = async (id: number) => {
+		const rs = await this.put(`/publish/${id}`)
+		return rs
+	}
+
+	unpublishTest = async (id: number) => {
+		const rs = await this.put(`/un-publish/${id}`)
+		return rs
+	}
+
+	findOne = async (id: number) => {
+		const rs = await this.get(`/${id}`)
+		return rs
+	}
+
+	checkPublished = async (questionId: number) => {
+		const rs = await this.get(`/check-published/${questionId}`)
+		return rs
+	}
 }

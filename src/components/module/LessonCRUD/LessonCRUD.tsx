@@ -10,6 +10,7 @@ import CreateLessonForm from './CreateLessonForm/CreateLessonForm'
 import UpdateLessonForm from './UpdateLessonForm/UpdateLessonForm'
 import AddWordToLesson from './AddWordToLesson/AddWordToLesson'
 import { Link } from 'react-router-dom'
+import { message } from 'antd'
 
 const PAGE_SIZE = 10
 
@@ -57,7 +58,6 @@ const LessonCRUD = () => {
 	} = useModal()
 
 	const handleCreate = (data: any) => {
-		console.log(data)
 		const storage = getStorage(firebaseApp)
 
 		const storageRef = ref(storage, `${Date.now() + data.image.name}`)
@@ -68,6 +68,7 @@ const LessonCRUD = () => {
 				...data,
 				imageURL: url,
 			})
+			message.success('created')
 			closeCreateForm()
 			find()
 		})
@@ -78,19 +79,34 @@ const LessonCRUD = () => {
 		openUpdateForm()
 	}
 
-	const handleUpdate = (data: any) => {
-		const storage = getStorage(firebaseApp)
-		const storageRef = ref(storage, `${Date.now() + data.image.name}`)
+	const handleUpdate = async (data: any) => {
+		if (data.image) {
+			const storage = getStorage(firebaseApp)
+			const storageRef = ref(storage, `${Date.now() + data.image.name}`)
 
-		uploadBytes(storageRef, data.pronounciation).then(async (snapshot) => {
-			const url = await getDownloadURL(snapshot.ref)
+			uploadBytes(storageRef, data.pronounciation).then(
+				async (snapshot) => {
+					const url = await getDownloadURL(snapshot.ref)
+					const res = await api.lessonApi.updateLesson({
+						...data,
+						imageURL: url,
+					})
+
+					message.success('updated')
+					find()
+					closeUpdateForm()
+				}
+			)
+		} else {
 			const res = await api.lessonApi.updateLesson({
 				...data,
-				imageURL: url,
+				imageURL: selected?.imageURL,
 			})
+
+			message.success('updated')
 			find()
 			closeUpdateForm()
-		})
+		}
 	}
 
 	const handleOpenDeleteForm = (s: lesson) => {
@@ -99,10 +115,18 @@ const LessonCRUD = () => {
 	}
 
 	const handleDelete = async () => {
-		const res = await api.lessonApi.deleteLesson(selected?.id ?? 0)
+		try {
+			const res = await api.lessonApi.deleteLesson(selected?.id ?? 0)
 
-		find()
-		closeDeleteForm()
+			message.success('deleted')
+			find()
+			closeDeleteForm()
+		} catch (err: any) {
+			if (err.message.includes('tests_ibfk_2')) {
+				closeDeleteForm()
+				message.error('This lesson already have tests')
+			}
+		}
 	}
 	const handleOpenWordForm = (s: lesson) => {
 		setSelected(s)
@@ -111,18 +135,19 @@ const LessonCRUD = () => {
 
 	return (
 		<div className='u-page'>
+			<h1 className='text-5xl font-bold text-center mb-4'>
+				Manage lessons
+			</h1>
 			<Modal open={isWordFormOpen} onClose={closeWordForm}>
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>
 					{selected && <AddWordToLesson lessonID={selected.id} />}
 				</div>
 			</Modal>
-
 			<Modal open={isCreateFormOpen} onClose={closeCreateForm}>
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>
 					<CreateLessonForm onCreate={handleCreate} />
 				</div>
 			</Modal>
-
 			<Modal open={isUpdateFormOpen} onClose={closeUpdateForm}>
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg h-1/2'>
 					<UpdateLessonForm
@@ -131,7 +156,6 @@ const LessonCRUD = () => {
 					/>
 				</div>
 			</Modal>
-
 			<Modal open={isDeleteFormOpen} onClose={closeDeleteForm}>
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>
 					<span>Are you sure to delete</span>
@@ -148,7 +172,6 @@ const LessonCRUD = () => {
 					</div>
 				</div>
 			</Modal>
-
 			<button className='btn btn-primary' onClick={openCreateForm}>
 				Create
 			</button>
