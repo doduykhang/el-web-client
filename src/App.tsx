@@ -16,7 +16,9 @@ import HistoryDetailPage from './components/module/HistoryDetailPage/HistoryDeta
 import HistoryPage from './components/module/HistoryPage/HistoryPage'
 import LessonCURD from './components/module/LessonCRUD/LessonCRUD'
 import LoginPage from './components/module/LoginPage/LoginPage'
+import OptionCRUD from './components/module/OptionCRUD/OptionCRUD'
 import ProfilePage from './components/module/ProfilePage/ProfilePage'
+import QuestionCRUD from './components/module/QuestionCRUD/QuestionCRUD'
 import RealTestPage from './components/module/RealTestPage/RealTestPage'
 import TestCRUD from './components/module/TestCRUD/TestCRUD'
 import WordCURD from './components/module/WordCRUD/WordCRUD'
@@ -237,6 +239,30 @@ function App() {
 							redirect={'/'}
 						>
 							<TestCRUD />
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path='/admin/questions/:id'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'ADMIN'}
+							redirect={'/'}
+						>
+							<QuestionCRUD />
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path='/admin/options/:id'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'ADMIN'}
+							redirect={'/'}
+						>
+							<OptionCRUD />
 						</ProtectedRoute>
 					}
 				/>

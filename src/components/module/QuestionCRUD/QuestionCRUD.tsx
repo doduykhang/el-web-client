@@ -2,21 +2,21 @@ import { useCallback, useEffect, useState } from 'react'
 import api from '../../../api/index.api'
 import useModal from '../../../utils/useModal'
 import { Modal } from '@mui/material'
-import { Test } from '../../../types/test'
 import { Link, useParams } from 'react-router-dom'
-import CreateTestForm from './CreateTestForm/CreateTestForm'
-import UpdateTestForm from './UpdateTestForm/UpdateTestForm'
+import { Question } from '../../../types/questions'
+import CreateQuestionForm from './CreateQuestionForm/CreateQuestionForm'
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import { firebaseApp } from '../../../firebase'
+import UpdateQuestionForm from './UpdateQuestionForm/UpdateQuestionForm'
 
-const TestCRUD = () => {
-	const [data, setData] = useState<Test[]>([])
-	const [selected, setSelected] = useState<Test | undefined>()
+const QuestionCRUD = () => {
+	const [data, setData] = useState<Question[]>([])
+	const [selected, setSelected] = useState<Question | undefined>()
 	const { id } = useParams()
 
 	const find = useCallback(async () => {
 		if (id) {
-			const res = await api.lessonApi.getTest(id ? +id : 0)
+			const res = await api.testApi.getQuestions(id ? +id : 0)
 			setData(res || [])
 		}
 	}, [id])
@@ -43,45 +43,60 @@ const TestCRUD = () => {
 		handleClose: closeDeleteForm,
 	} = useModal()
 
-	const handleCreate = (data: any) => {
-		const storage = getStorage(firebaseApp)
-		const storageRef = ref(
-			storage,
-			`audio/${data.pronounciation.name + Date.now()}`
-		)
+	const handleCreate = async (data: any) => {
+		if (!id) return
 
-		uploadBytes(storageRef, data.pronounciation).then(async (snapshot) => {
-			const url = await getDownloadURL(snapshot.ref)
-			const res = await api.wordApi.createWord({
-				...data,
-				pronounciation: url,
+		if (data.questionType === 'AUDIO') {
+			const storage = getStorage(firebaseApp)
+			const storageRef = ref(
+				storage,
+				`audio/${Date.now() + data.audio.name}`
+			)
+
+			uploadBytes(storageRef, data.audio).then(async (snapshot) => {
+				const url = await getDownloadURL(snapshot.ref)
+				const res = await api.questionApi.createQuestion({
+					...data,
+					content: url,
+					testID: +id,
+				})
+				console.log(res)
+				closeCreateForm()
+				find()
 			})
-			console.log(res)
-			closeCreateForm()
+		} else {
+			const res = await api.questionApi.createQuestion({
+				...data,
+				testID: +id,
+			})
 			find()
-		})
+			closeCreateForm()
+		}
 	}
 
-	const handelOpenUpdateForm = (word: Test) => {
+	const handelOpenUpdateForm = (word: Question) => {
 		setSelected(word)
 		openUpdateForm()
 	}
 
 	const handleUpdate = async (data: any) => {
 		if (id) {
-			const res = await api.testApi.updateTest({ ...data, lessonID: +id })
+			const res = await api.questionApi.updateQuestion({
+				...data,
+				testID: +id,
+			})
 			find()
 			closeUpdateForm()
 		}
 	}
 
-	const handleOpenDeleteForm = (word: Test) => {
+	const handleOpenDeleteForm = (word: Question) => {
 		setSelected(word)
 		openDeleteForm()
 	}
 
 	const handleDelete = async () => {
-		const res = await api.testApi.deleteTest(selected?.id ?? 0)
+		const res = await api.questionApi.deleteQuestion(selected?.id ?? 0)
 
 		find()
 		closeDeleteForm()
@@ -91,13 +106,13 @@ const TestCRUD = () => {
 		<div className='u-page'>
 			<Modal open={isCreateFormOpen} onClose={closeCreateForm}>
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>
-					<CreateTestForm onCreate={handleCreate} />
+					<CreateQuestionForm onCreate={handleCreate} />
 				</div>
 			</Modal>
 
 			<Modal open={isUpdateFormOpen} onClose={closeUpdateForm}>
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>
-					<UpdateTestForm
+					<UpdateQuestionForm
 						onUpdate={handleUpdate}
 						selected={selected}
 					/>
@@ -128,9 +143,9 @@ const TestCRUD = () => {
 				<thead>
 					<tr>
 						<th className='p-2'>#</th>
-						<th>Name</th>
-						<th>Level</th>
-						<th>Time</th>
+						<th>Content</th>
+						<th>Answer</th>
+						<th>QuestionType</th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -139,9 +154,15 @@ const TestCRUD = () => {
 						return (
 							<tr key={d.id} className='text-center'>
 								<td className='p-2'>{index + 1}</td>
-								<td>{d.testName}</td>
-								<td>{d.level}</td>
-								<td>{d.time}</td>
+								<td>
+									{d.questionType === 'AUDIO' ? (
+										<audio src={d.content} controls></audio>
+									) : (
+										d.content
+									)}
+								</td>
+								<td>{d.answer}</td>
+								<td>{d.questionType}</td>
 								<td>
 									{
 										<div className='flex gap-2'>
@@ -161,14 +182,15 @@ const TestCRUD = () => {
 											>
 												Delete
 											</button>
-
-											<Link
-												to={`/admin/questions/${d.id}`}
-											>
-												<button className='btn btn-success'>
-													Question
-												</button>
-											</Link>
+											{d.questionType === 'CHOICE' && (
+												<Link
+													to={`/admin/options/${d.id}`}
+												>
+													<button className='btn btn-success'>
+														Option
+													</button>
+												</Link>
+											)}
 										</div>
 									}
 								</td>
@@ -181,4 +203,4 @@ const TestCRUD = () => {
 	)
 }
 
-export default TestCRUD
+export default QuestionCRUD

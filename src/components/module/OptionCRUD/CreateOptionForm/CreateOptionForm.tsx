@@ -5,23 +5,21 @@ import classNames from 'classnames'
 
 const schema = yup
 	.object({
-		testName: yup.string().required('Name is required'),
-		level: yup.number().required('level is required'),
-		time: yup.number().required('time is required'),
+		content: yup.string().required('content is required'),
+		position: yup.number().required('position is required'),
 	})
 	.required()
 
 interface form {
-	testName: string
-	level: number
-	time: number
+	content: string
+	position: number
 }
 
 interface props {
 	onCreate: (data: form) => void
 }
 
-const CreateTestForm = ({ onCreate }: props) => {
+const CreateOptionForm = ({ onCreate }: props) => {
 	const {
 		register,
 		handleSubmit,
@@ -31,61 +29,46 @@ const CreateTestForm = ({ onCreate }: props) => {
 	})
 
 	const onSubmit = (data: form) => {
-		onCreate(data)
+		onCreate({ ...data })
 	}
 
 	return (
 		<form className='max-w-lg' onSubmit={handleSubmit(onSubmit)}>
 			<div className='form-control'>
-				<label className='label-text text-xl'>Name</label>
+				<label className='label-text text-xl'>Content</label>
 				<input
 					className={classNames('input input-bordered', {
-						'input-error': errors.testName,
+						'input-error': errors.content,
 					})}
 					type='text'
-					{...register('testName')}
+					{...register('content')}
 				/>
 
 				<label className='label-text text-xl text-error'>
-					{errors.testName?.message}
+					{errors.content?.message}
 				</label>
 			</div>
 
 			<div className='form-control'>
-				<label className='label-text text-xl'>Time</label>
+				<label className='label-text text-xl'>Position</label>
 				<input
 					className={classNames('input input-bordered', {
-						'input-error': errors.time,
+						'input-error': errors.position,
 					})}
 					type='text'
-					{...register('time')}
+					{...register('position')}
 				/>
 
 				<label className='label-text text-xl text-error'>
-					{errors.time?.message}
-				</label>
-			</div>
-
-			<div className='form-control'>
-				<label className='label-text text-xl'>Level</label>
-				<input
-					className={classNames('input input-bordered', {
-						'input-error': errors.level,
-					})}
-					type='text'
-					{...register('level')}
-				/>
-
-				<label className='label-text text-xl text-error'>
-					{errors.level?.message}
+					{errors.position?.message}
 				</label>
 			</div>
 
 			<button className='btn btn-primary' type='submit'>
-				Create test
+				Create option
 			</button>
 		</form>
 	)
 }
 
-export default CreateTestForm
+export default CreateOptionForm
