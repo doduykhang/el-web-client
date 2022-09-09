@@ -3,6 +3,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import classNames from 'classnames'
 import api from '../../../api/index.api'
+import { message } from 'antd'
 
 const schema = yup
 	.object({
@@ -42,7 +43,7 @@ const RegisterPage = ({}: props) => {
 				dateOfBirth: data.dateOFBirth.toISOString(),
 			})
 		} catch (err) {
-			console.log(err)
+			message.error('Email already in use')
 		}
 	}
 

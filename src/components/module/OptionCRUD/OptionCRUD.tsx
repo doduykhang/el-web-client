@@ -10,6 +10,7 @@ import CreateOptionForm from './CreateOptionForm/CreateOptionForm'
 import UpdateOptionForm from './UpdateOptionForm/UpdateOptionForm'
 import { Test } from '../../../types/test'
 import { GobackButtonCommon } from '../../common'
+import { message } from 'antd'
 
 const OptionCRUD = () => {
 	const [data, setData] = useState<Option[]>([])
@@ -59,12 +60,16 @@ const OptionCRUD = () => {
 	const handleCreate = async (data: any) => {
 		if (!id) return
 
-		const res = await api.optionApi.createOption({
-			...data,
-			questionID: +id,
-		})
-		find()
-		closeCreateForm()
+		try {
+			const res = await api.optionApi.createOption({
+				...data,
+				questionID: +id,
+			})
+			find()
+			closeCreateForm()
+		} catch {
+      message.error('Can have 2 option with same position')
+		}
 	}
 
 	const handelOpenUpdateForm = (word: Option) => {
@@ -97,13 +102,11 @@ const OptionCRUD = () => {
 
 	return (
 		<div className='u-page'>
-
 			<GobackButtonCommon title='Go back' />
 			<h1 className='text-5xl font-bold text-center mb-4'>
 				Manage options
 			</h1>
 			<Modal open={isCreateFormOpen} onClose={closeCreateForm}>
-
 				<div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-10 rounded-lg'>
 					<CreateOptionForm onCreate={handleCreate} />
 				</div>

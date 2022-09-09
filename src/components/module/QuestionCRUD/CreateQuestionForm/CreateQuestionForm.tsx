@@ -6,9 +6,9 @@ import { useState } from 'react'
 
 const schema = yup
 	.object({
-		content: yup.string(),
-		quesitonType: yup.string(),
-		answer: yup.string(),
+		content: yup.string().required("content is required"),
+		quesitonType: yup.string().required("question type is required"),
+		answer: yup.string().required("answer is required"),
 	})
 	.required()
 

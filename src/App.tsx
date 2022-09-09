@@ -26,6 +26,7 @@ import TestCRUD from './components/module/TestCRUD/TestCRUD'
 import WordCURD from './components/module/WordCRUD/WordCRUD'
 import { AuthContext } from './context/AuthContext'
 import RegisterPage from './components/module/RegisterPage/RegisterPage'
+import ChangePasswordPage from './components/module/ChangePasswordPage/ChangePasswordPage'
 
 function App() {
 	const { auth, update } = useContext(AuthContext)
@@ -88,6 +89,20 @@ function App() {
 							redirect={auth.role === 'ADMIN' ? '/admin' : '/'}
 						>
 							<RegisterPage />
+						</ProtectedRoute>
+					}
+				/>
+
+				<Route
+					path='/change-password'
+					element={
+						<ProtectedRoute
+							isAllow={auth.role === 'USER'}
+							redirect={
+								auth.role === 'ADMIN' ? '/admin' : '/login'
+							}
+						>
+							<ChangePasswordPage />
 						</ProtectedRoute>
 					}
 				/>

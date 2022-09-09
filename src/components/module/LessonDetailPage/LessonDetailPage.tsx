@@ -95,7 +95,7 @@ const LessonDetailPage = () => {
 								key={test.id}
 								id={test.id}
 								testName={test.testName}
-								time={test.time}
+								time={test.time * 60}
 								level={test.level}
 							/>
 						))}

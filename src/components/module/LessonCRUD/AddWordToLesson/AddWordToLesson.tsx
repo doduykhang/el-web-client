@@ -55,6 +55,8 @@ const AddWordToLesson = ({ lessonID }: props) => {
 					<tr>
 						<th className='p-2'>#</th>
 						<th>Word</th>
+						<th>Definition</th>
+						<th>Pronounciation</th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -64,6 +66,10 @@ const AddWordToLesson = ({ lessonID }: props) => {
 							<tr key={d.id} className='text-center'>
 								<td className='p-2'>{index + 1}</td>
 								<td>{d.word}</td>
+								<td>{d.definition}</td>
+								<td>
+									<audio src={d.pronounciation} controls></audio>
+								</td>
 								<td>
 									{
 										<div className='flex gap-2'>

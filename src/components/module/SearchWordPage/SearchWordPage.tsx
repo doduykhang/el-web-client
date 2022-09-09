@@ -37,7 +37,7 @@ const SearchWordPage = () => {
 			const response = await api.wordApi.findWords({
 				pageNum: currentPage - 1,
 				pageSize: WORD_PAGE_SIZE,
-				word: query,
+				word: query.trim().toLowerCase(),
 			})
 			setTotal(response.total)
 			setWords(response.data || [])

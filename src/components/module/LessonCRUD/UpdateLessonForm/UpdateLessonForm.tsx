@@ -79,7 +79,7 @@ const UpdateLessonForm = ({ onUpdate, selected }: props) => {
 	}, [selected])
 
 	return (
-		<form className='max-w-lg' onSubmit={handleSubmit(onSubmit)}>
+		<form className='max-w-lg max-h-96 overflow-y-auto' onSubmit={handleSubmit(onSubmit)}>
 			<div className='form-control'>
 				<label className='label-text text-xl'>Name</label>
 				<input

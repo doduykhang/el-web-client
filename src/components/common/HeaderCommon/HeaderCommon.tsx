@@ -20,6 +20,10 @@ const HeaderCommon = () => {
 		navigate('/')
 	}
 
+	const handleAvatarClick = () => {
+		if (auth.role === 'USER') navigate('/change-password')
+	}
+
 	const headerItems = useMemo(
 		() => [
 			{
@@ -50,14 +54,14 @@ const HeaderCommon = () => {
 
 			{
 				icon: <TranslateIcon className='header-icon' />,
-				title: 'Words',
+				title: 'Manage Words',
 				link: '/admin/word',
 				visible: auth.role === 'ADMIN',
 			},
 
 			{
 				icon: <BookIcon className='header-icon' />,
-				title: 'Lessons',
+				title: 'Manage Lessons',
 				link: '/admin/lesson',
 				visible: auth.role === 'ADMIN',
 			},
@@ -79,7 +83,10 @@ const HeaderCommon = () => {
 			</ul>
 			{auth.role !== '' ? (
 				<>
-					<div className='avatar placeholder ml-auto'>
+					<div
+						className='avatar placeholder ml-auto'
+						onClick={handleAvatarClick}
+					>
 						<div className='bg-neutral-focus text-neutral-content rounded-full w-16 h-16'>
 							<span className='text-3xl capitalize'>
 								{auth.firstName.charAt(0)}

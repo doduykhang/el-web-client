@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import api from '../../../api/index.api'
 import { Question } from '../../../types/questions'
-import { ButtonCommon } from '../../common'
+import { ButtonCommon, GobackButtonCommon } from '../../common'
 import QuestionBuilder from './components/QuestionBuilder'
 import SideBar from './components/SideBar'
 
@@ -11,7 +11,7 @@ const RealTestPage = () => {
 	const [questions, setQuestions] = useState<Question[]>([])
 	const [currentQuestion, setCurrentQuestion] = useState(0)
 	const [answers, setAnswer] = useState<any>({})
-	const [remainingTime, setRemainingTime] = useState(30)
+	const [remainingTime, setRemainingTime] = useState(60)
 	const [finished, setFinishied] = useState(false)
 	const [score, setScore] = useState('')
 
@@ -30,6 +30,9 @@ const RealTestPage = () => {
 					)
 					setAnswer(initalAnswer)
 				}
+
+				const test = await api.testApi.findOne(+id)
+				setRemainingTime(test.time * 60)
 			}
 		}
 		getQuestions()
@@ -94,6 +97,7 @@ const RealTestPage = () => {
 					isFinished={finished}
 					onSelectQuestion={setCurrentQuestion}
 				>
+					<GobackButtonCommon title='Go back' />
 					<div className='w-full flex flex-col items-center'>
 						<div className='w-full flex justify-between items-center px-6 mt-2'>
 							<span className='mx-auto text-2xl'>
@@ -119,9 +123,13 @@ const RealTestPage = () => {
 									</span>
 								</p>
 							</span>
-							<div className='w-28'>
+							<div className=''>
 								{finished ? (
-									<div className='text-xl'>Score {score}</div>
+									<div className='flex gap-2 items-center'>
+										<div className='text-xl'>
+											Score {score}
+										</div>
+									</div>
 								) : (
 									<ButtonCommon onClick={handleSubmitTest}>
 										Submit

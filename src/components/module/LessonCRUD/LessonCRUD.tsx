@@ -82,21 +82,20 @@ const LessonCRUD = () => {
 	const handleUpdate = async (data: any) => {
 		if (data.image) {
 			const storage = getStorage(firebaseApp)
-			const storageRef = ref(storage, `${Date.now() + data.image.name}`)
+			const storageRef = ref(storage, `${Date.now()} test`)
 
-			uploadBytes(storageRef, data.pronounciation).then(
-				async (snapshot) => {
-					const url = await getDownloadURL(snapshot.ref)
-					const res = await api.lessonApi.updateLesson({
-						...data,
-						imageURL: url,
-					})
+			uploadBytes(storageRef, data.image).then(async (snapshot) => {
+				const url = await getDownloadURL(snapshot.ref)
+				console.log(url)
+				const res = await api.lessonApi.updateLesson({
+					...data,
+					imageURL: url,
+				})
 
-					message.success('updated')
-					find()
-					closeUpdateForm()
-				}
-			)
+				message.success('updated')
+				find()
+				closeUpdateForm()
+			})
 		} else {
 			const res = await api.lessonApi.updateLesson({
 				...data,

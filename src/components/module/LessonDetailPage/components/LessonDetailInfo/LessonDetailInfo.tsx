@@ -15,7 +15,6 @@ const LessonDetailInfo = ({ name, imageURL, content, createdBy }: props) => {
 				<div className='card-body '>
 					<div className='flex flex-col items-center text-center'>
 						<h2 className='card-title'>{name}</h2>
-						<span className=''> {createdBy}</span>
 					</div>
 					<p
 						className='my-5'

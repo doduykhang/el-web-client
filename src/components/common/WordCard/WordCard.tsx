@@ -21,9 +21,19 @@ const WordCard = ({
 				<h2 className='card-title'>{word}</h2>
 				<div className='flex'>
 					<div className='flex-1'>
-						<p>Definition: {definition}</p>
-						<p>Example: {example}</p>
-						<p>Type: {type}</p>
+						<p>
+							<span className='font-bold'> Definition:</span>{' '}
+							{definition}
+						</p>
+						<p>
+							<span className='font-bold'> Example:</span>{' '}
+							{example}
+						</p>
+
+						<p>
+
+							<span className='font-bold'> Type:</span>{' '}
+              {type}</p>
 					</div>
 					<div>
 						<button className='btn btn-circle' onClick={start}>

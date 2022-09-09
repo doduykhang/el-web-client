@@ -24,4 +24,9 @@ export class AuthApi extends BaseApi {
 		const rs = await this.get('profile')
 		return rs
 	}
+
+	changePassword = async (data: any) => {
+		const rs = await this.put('change-password', data)
+		return rs
+	}
 }

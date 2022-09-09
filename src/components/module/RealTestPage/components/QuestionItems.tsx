@@ -32,7 +32,7 @@ const QuestionItem = ({
 			onClick={handleSelectQuestion}
 		>
 			<div>
-				<span>{index}</span>
+				<span>{index+1}</span>
 				<span>{answer}</span>
 			</div>
 		</li>

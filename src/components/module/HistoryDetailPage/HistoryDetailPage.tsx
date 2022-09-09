@@ -64,20 +64,24 @@ const HistoryDetailPage = () => {
 				Test history
 			</h2>
 			<div className='flex justify-center'>
-				<div className='w-1/2 h-96'>
-					{testStats.length && (
-						<Chart
-							options={{
-								data: testStats,
-								primaryAxis,
-								secondaryAxes,
-							}}
-						/>
-					)}
+				<div className='w-1/2 h-96 flex items-end'>
+					<div className='w-full h-full '>
+						<span>Score</span>
+						{testStats.length && (
+							<Chart
+								options={{
+									data: testStats,
+									primaryAxis,
+									secondaryAxes,
+								}}
+							/>
+						)}
+					</div>
+					<span>Times</span>
 				</div>
 			</div>
 
-			<div className='flex justify-center'>
+			<div className='flex justify-center mt-5'>
 				<Link to={`/test/${testId}`}>
 					<button className='btn btn-primary'>Take test again</button>
 				</Link>
